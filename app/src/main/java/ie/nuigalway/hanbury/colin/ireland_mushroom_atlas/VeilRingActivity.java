@@ -1,11 +1,7 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class StemFeaturesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class VeilRingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
@@ -25,13 +21,12 @@ public class StemFeaturesActivity extends AppCompatActivity implements AdapterVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stem_features);
+        setContentView(R.layout.activity_veil_ring);
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
 
-
-        saveAndReturn = findViewById(R.id.buttonSaveAndReturnStemFeatures);
+        saveAndReturn = findViewById(R.id.buttonSaveAndReturnVeilRingFeatures);
         saveAndReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,43 +34,42 @@ public class StemFeaturesActivity extends AppCompatActivity implements AdapterVi
             }
         });
 
+        Spinner veilType = findViewById(R.id.spinnerVeilType);
+        Spinner veilColour = findViewById(R.id.spinnerVeilColour);
+        Spinner ringNumber = findViewById(R.id.spinnerRingNumber);
+        Spinner ringType = findViewById(R.id.spinnerRingType);
 
-        Spinner stalkShape = findViewById(R.id.spinnerStalkShape);
-        Spinner stalkRoot = findViewById(R.id.spinnerStalkRoot);
-        Spinner stalkSurface = findViewById(R.id.spinnerStalkSurface);
-        Spinner stalkColour = findViewById(R.id.spinnerStalkColour);
-
-        ArrayAdapter<String> stalkShapeAdapter = new ArrayAdapter<String>(
-                StemFeaturesActivity.this,
+        ArrayAdapter<String> veilTypeAdapter = new ArrayAdapter<String>(
+                VeilRingActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkShapes));
-        stalkShapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkShape.setAdapter(stalkShapeAdapter);
-        stalkShape.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.veilTypes));
+        veilTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        veilType.setAdapter(veilTypeAdapter);
+        veilType.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkRootAdapter = new ArrayAdapter<String>(
-                StemFeaturesActivity.this,
+        ArrayAdapter<String> veilColourAdapter = new ArrayAdapter<String>(
+                VeilRingActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkRoots));
-        stalkRootAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkRoot.setAdapter(stalkRootAdapter);
-        stalkRoot.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.veilColours));
+        veilColourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        veilColour.setAdapter(veilColourAdapter);
+        veilColour.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkSurfaceAdapter = new ArrayAdapter<String>(
-                StemFeaturesActivity.this,
+        ArrayAdapter<String> ringNumberAdapter = new ArrayAdapter<String>(
+                VeilRingActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkSurfaces));
-        stalkSurfaceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkSurface.setAdapter(stalkSurfaceAdapter);
-        stalkSurface.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.ringNumbers));
+        ringNumberAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ringNumber.setAdapter(ringNumberAdapter);
+        ringNumber.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkColourAdapter = new ArrayAdapter<String>(
-                StemFeaturesActivity.this,
+        ArrayAdapter<String> ringTypeAdapter = new ArrayAdapter<String>(
+                VeilRingActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkColours));
-        stalkColourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkColour.setAdapter(stalkColourAdapter);
-        stalkColour.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.ringTypes));
+        ringTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ringType.setAdapter(ringTypeAdapter);
+        ringType.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -105,7 +99,7 @@ public class StemFeaturesActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        //do nothing
+
     }
 
     public static ArrayList<String> getAttributesList(){

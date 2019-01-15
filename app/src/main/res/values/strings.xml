@@ -182,6 +182,5 @@
         <item>Waste</item>
         <item>Woodland</item>
     </string-array>
-    <string name="title_activity_new_observation_menu">NewObservationMenuActivity</string>
     <string name="title_activity_new_observation">New Observation</string>
 </resources>

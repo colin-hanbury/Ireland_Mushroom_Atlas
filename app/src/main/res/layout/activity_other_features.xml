@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".OtherFeatures">
+    tools:context=".OtherFeaturesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,15 +71,6 @@
             android:background="@drawable/textbox_border"
             android:spinnerMode="dropdown"
             android:tag="Habitat"/>
-
-        <Button
-            android:id="@+id/buttonAddOtherPhotos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="20dp"
-            android:text="Add Photo(s)"
-            android:textAlignment="center"/>
 
         <Button
             android:id="@+id/buttonSaveAndReturnOtherFeatures"
