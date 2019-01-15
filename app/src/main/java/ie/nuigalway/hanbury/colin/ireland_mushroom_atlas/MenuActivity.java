@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.firebase.FirebaseApp;
+
+
 public class MenuActivity extends AppCompatActivity {
 
     private ImageButton mapButton;
@@ -15,7 +18,7 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
+        FirebaseApp.initializeApp(this);
         mapButton = findViewById(R.id.imageButtonMushroomMap);
         observationButton = findViewById(R.id.imageButtonMakeObservation);
 
@@ -23,14 +26,15 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent MapsActivity = new Intent(MenuActivity.this,
-                        MapsActivity.class);
+                        ie.nuigalway.hanbury.colin.ireland_mushroom_atlas.MapsActivity.class);
                 startActivity(MapsActivity);
             }
         });
         observationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent NewObservation = new Intent(MenuActivity.this, NewObservationActivity.class);
+                Intent NewObservation = new Intent(MenuActivity.this,
+                        NewObservationActivity.class);
                 startActivity(NewObservation);
             }
         });

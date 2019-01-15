@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -31,30 +33,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class NewObservationActivity extends AppCompatActivity {
+public class NewObservationActivity extends AppCompatActivity implements LocationListener {
 
-    FirebaseDatabase database;
-    DatabaseReference dbRef;
-    FirebaseStorage myStorageRef;
+    private FirebaseDatabase database;
+    private DatabaseReference dbRef;
+    private FirebaseStorage myStorageRef;
     private ArrayList<String> attributesList;
     private HashMap<String, String> attributesMap;
-    private Bitmap bitmap;
-    private Uri mImageUri = null;
     private StorageReference mStorage;
     private ArrayList<Bitmap> bitmaps;
-    private static final int CAMERA_REQUEST_CODE = 1;
+    private LocationData mushroomLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_observation);
-        checkCameraPermission();
 
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
         myStorageRef = FirebaseStorage.getInstance();
         mStorage = myStorageRef.getReference();
         bitmaps = new ArrayList<>();
+        mushroomLocation = new LocationData(0,0);
+
+        checkCameraPermission();
+
+        Button takePhotosButton = findViewById(R.id.buttonTakePhotos);
+        ImageButton takePhotosImageButton = findViewById(R.id.imageButtonTakePhotos);
 
         Button capFeaturesButton = findViewById(R.id.buttonCapFeatures);
         ImageButton capFeaturesImageButton = findViewById(R.id.imageButtonCapFeatures);
@@ -62,6 +67,8 @@ public class NewObservationActivity extends AppCompatActivity {
         ImageButton gillFeaturesImageButton = findViewById(R.id.imageButtonGillFeatures);
         Button stemFeaturesButton = findViewById(R.id.buttonStemFeatures);
         ImageButton stemFeaturesImageButton = findViewById(R.id.imageButtonStemFeatures);
+        Button veilRingFeaturesButton = findViewById(R.id.buttonVeilRingFeatures);
+        ImageButton veilRingFeaturesImageButton = findViewById(R.id.imageButtonVeilRingFeatures);
         Button otherFeaturesButton = findViewById(R.id.buttonOtherFeatures);
         ImageButton otherFeaturesImageButton = findViewById(R.id.imageButtonOtherFeatures);
 
@@ -70,17 +77,36 @@ public class NewObservationActivity extends AppCompatActivity {
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
 
+        takePhotosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePhotosPage = new Intent(NewObservationActivity.this,
+                        TakePhotosActivity.class);
+                startActivity(takePhotosPage);
+            }
+        });
+        takePhotosImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePhotosPage = new Intent(NewObservationActivity.this,
+                        TakePhotosActivity.class);
+                startActivity(takePhotosPage);
+            }
+        });
+
         capFeaturesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent capFeaturesPage = new Intent(NewObservationActivity.this, CapFeaturesActivity.class);
+                Intent capFeaturesPage = new Intent(NewObservationActivity.this,
+                        CapFeaturesActivity.class);
                 startActivity(capFeaturesPage);
             }
         });
         capFeaturesImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent capFeaturesPage = new Intent(NewObservationActivity.this, CapFeaturesActivity.class);
+                Intent capFeaturesPage = new Intent(NewObservationActivity.this,
+                        CapFeaturesActivity.class);
                 startActivity(capFeaturesPage);
             }
         });
@@ -88,14 +114,16 @@ public class NewObservationActivity extends AppCompatActivity {
         gillFeaturesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gillFeaturesPage = new Intent(NewObservationActivity.this, GillFeaturesActivity.class);
+                Intent gillFeaturesPage = new Intent(NewObservationActivity.this,
+                        GillFeaturesActivity.class);
                 startActivity(gillFeaturesPage);
             }
         });
         gillFeaturesImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gillFeaturesPage = new Intent(NewObservationActivity.this, GillFeaturesActivity.class);
+                Intent gillFeaturesPage = new Intent(NewObservationActivity.this,
+                        GillFeaturesActivity.class);
                 startActivity(gillFeaturesPage);
             }
         });
@@ -103,29 +131,50 @@ public class NewObservationActivity extends AppCompatActivity {
         stemFeaturesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent stemFeaturesPage = new Intent(NewObservationActivity.this, StemFeaturesActivity.class);
+                Intent stemFeaturesPage = new Intent(NewObservationActivity.this,
+                        StemFeaturesActivity.class);
                 startActivity(stemFeaturesPage);
             }
         });
         stemFeaturesImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent stemFeaturesPage = new Intent(NewObservationActivity.this, StemFeaturesActivity.class);
+                Intent stemFeaturesPage = new Intent(NewObservationActivity.this,
+                        StemFeaturesActivity.class);
                 startActivity(stemFeaturesPage);
+            }
+        });
+
+        veilRingFeaturesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherFeaturesPage = new Intent(NewObservationActivity.this,
+                        VeilRingActivity.class);
+                startActivity(otherFeaturesPage);
+            }
+        });
+        veilRingFeaturesImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent otherFeaturesPage = new Intent(NewObservationActivity.this,
+                        VeilRingActivity.class);
+                startActivity(otherFeaturesPage);
             }
         });
 
         otherFeaturesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent otherFeaturesPage = new Intent(NewObservationActivity.this, OtherFeaturesActivity.class);
+                Intent otherFeaturesPage = new Intent(NewObservationActivity.this,
+                        OtherFeaturesActivity.class);
                 startActivity(otherFeaturesPage);
             }
         });
         otherFeaturesImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent otherFeaturesPage = new Intent(NewObservationActivity.this, OtherFeaturesActivity.class);
+                Intent otherFeaturesPage = new Intent(NewObservationActivity.this,
+                        OtherFeaturesActivity.class);
                 startActivity(otherFeaturesPage);
             }
         });
@@ -150,16 +199,25 @@ public class NewObservationActivity extends AppCompatActivity {
                         attributesList.add(feature);
                     }
                 }
+                if(VeilRingActivity.getAttributesList() != null) {
+                    for (String feature: VeilRingActivity.getAttributesList()) {
+                        attributesList.add(feature);
+                    }
+                }
                 if(OtherFeaturesActivity.getAttributesList() != null) {
                     for (String feature: OtherFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
 
+
+                /*
                 HashMap<String, String> capMap = CapFeaturesActivity.getAttributesMap();
                 HashMap<String, String> stemMap = StemFeaturesActivity.getAttributesMap();
                 HashMap<String, String> gillMap = GillFeaturesActivity.getAttributesMap();
+                HashMap<String, String> veilRingMap = GillFeaturesActivity.getAttributesMap();
                 HashMap<String, String> othersMap = OtherFeaturesActivity.getAttributesMap();
+                */
 
 
                 if(CapFeaturesActivity.getAttributesMap()!= null) {
@@ -177,14 +235,47 @@ public class NewObservationActivity extends AppCompatActivity {
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
+                if(VeilRingActivity.getAttributesMap()!= null) {
+                    HashMap tempMap = new HashMap(VeilRingActivity.getAttributesMap());
+                    tempMap.keySet().removeAll(attributesMap.keySet());
+                    attributesMap.putAll(tempMap);
+                }
                 if(OtherFeaturesActivity.getAttributesMap()!= null) {
                     HashMap tempMap = new HashMap(OtherFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
 
+///////////////////
+                if(TakePhotosActivity.getBitmapsList() != null) {
+                    for (Bitmap photo: TakePhotosActivity.getBitmapsList()) {
+                        bitmaps.add(photo);
+                    }
+                }
+                /*
+                if(CapFeaturesActivity.getBitmapsList() != null) {
+                    for (Bitmap photo: CapFeaturesActivity.getBitmapsList()) {
+                        bitmaps.add(photo);
+                    }
+                }
+                if(GillFeaturesActivity.getBitmapsList() != null) {
+                    for (Bitmap photo: GillFeaturesActivity.getBitmapsList()) {
+                        bitmaps.add(photo);
+                    }
+                }
+                if(StemFeaturesActivity.getBitmapsList() != null) {
+                    for (Bitmap photo: StemFeaturesActivity.getBitmapsList()) {
+                        bitmaps.add(photo);
+                    }
+                }
+                if(OtherFeaturesActivity.getBitmapsList() != null) {
+                    for (Bitmap photo: OtherFeaturesActivity.getBitmapsList()) {
+                        bitmaps.add(photo);
+                    }
+                }
+                */
 
-                if(attributesList.isEmpty()){
+                if(attributesList.isEmpty() && bitmaps.isEmpty()){
                     Toast.makeText(NewObservationActivity.this,"No data entered",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -202,31 +293,10 @@ public class NewObservationActivity extends AppCompatActivity {
                         else if(tag.contains("Stalk")){
                             type = "Stem";
                         }
-                        dbRef.child("Fungi Attributes:").child(time).child(type).child(tag).
+                        dbRef.child("Mushroom Attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
-
-                    if(CapFeaturesActivity.getBitmapsList() != null) {
-                        for (Bitmap photo: CapFeaturesActivity.getBitmapsList()) {
-                            bitmaps.add(photo);
-                        }
-                    }
-                    if(GillFeaturesActivity.getBitmapsList() != null) {
-                        for (Bitmap photo: GillFeaturesActivity.getBitmapsList()) {
-                            bitmaps.add(photo);
-                        }
-                    }
-                    if(StemFeaturesActivity.getBitmapsList() != null) {
-                        for (Bitmap photo: StemFeaturesActivity.getBitmapsList()) {
-                            bitmaps.add(photo);
-                        }
-                    }
-                    if(OtherFeaturesActivity.getBitmapsList() != null) {
-                        for (Bitmap photo: OtherFeaturesActivity.getBitmapsList()) {
-                            bitmaps.add(photo);
-                        }
-                    }
-
+                    dbRef.child("Mushroom Locations").child(time).setValue(mushroomLocation);
                     uploadPhotos(time);
                     Toast.makeText(NewObservationActivity.this,"Observation submitted",
                             Toast.LENGTH_SHORT).show();
@@ -300,5 +370,25 @@ public class NewObservationActivity extends AppCompatActivity {
             }
             Toast.makeText(NewObservationActivity.this, "Photo(s) uploaded", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mushroomLocation = new LocationData(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

@@ -26,7 +26,7 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
 
-        saveAndReturn = findViewById(R.id.buttonSaveAndReturnStemFeatures);
+        saveAndReturn = findViewById(R.id.buttonSaveAndReturnVeilRingFeatures);
         saveAndReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,5 +100,12 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public static ArrayList<String> getAttributesList(){
+        return attributesList;
+    }
+    public static HashMap<String, String> getAttributesMap(){
+        return attributesMap;
     }
 }

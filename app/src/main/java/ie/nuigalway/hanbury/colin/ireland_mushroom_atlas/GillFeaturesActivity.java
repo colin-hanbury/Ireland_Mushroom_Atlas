@@ -20,11 +20,7 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
 
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
-    private static ArrayList<Bitmap> bitmaps;
-    private Bitmap bitmap;
-    private Button addPhoto;
     private Button saveAndReturn;
-    private static final int CAMERA_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +29,6 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
-        bitmaps = new ArrayList<>();
-
-        addPhoto = findViewById(R.id.buttonAddGillPhotos);
 
         saveAndReturn = findViewById(R.id.buttonSaveAndReturnGillFeatures);
         saveAndReturn.setOnClickListener(new View.OnClickListener() {
@@ -83,17 +76,6 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
         gillColour.setAdapter(gillColourAdapter);
         gillColour.setOnItemSelectedListener(this);
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    // use standard intent to capture an image
-                    Intent cameraPhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhoto, CAMERA_REQUEST_CODE);
-                }
-                catch (ActivityNotFoundException anfe) {}
-            }
-        });
     }
 
     @Override
@@ -126,23 +108,11 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
         //do nothing
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-            bitmap = (Bitmap) data.getExtras().get("data");
-            bitmaps.add(bitmap);
-            Toast.makeText(GillFeaturesActivity.this, "Photo ready to be uploaded", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public static ArrayList<String> getAttributesList(){
         return attributesList;
     }
     public static HashMap<String, String> getAttributesMap(){
         return attributesMap;
-    }
-    public static ArrayList<Bitmap> getBitmapsList(){
-        return bitmaps;
     }
 }

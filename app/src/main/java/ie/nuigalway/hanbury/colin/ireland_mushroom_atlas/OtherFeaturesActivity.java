@@ -1,10 +1,6 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,15 +12,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class OtherFeaturesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class OtherFeaturesActivity extends AppCompatActivity implements
+        AdapterView.OnItemSelectedListener {
 
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
-    private Button addPhoto;
-    private Bitmap bitmap;
-    private static ArrayList<Bitmap> bitmaps;
-    private static final int CAMERA_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +26,13 @@ public class OtherFeaturesActivity extends AppCompatActivity implements AdapterV
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
-        bitmaps = new ArrayList<>();
-
-        addPhoto = findViewById(R.id.buttonAddOtherPhotos);
 
         saveAndReturn = findViewById(R.id.buttonSaveAndReturnOtherFeatures);
         saveAndReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-                /*
-                Intent NewObservationPage = new Intent(OtherFeatures.this, NewObservation.class);
-                startActivity(NewObservationPage);
-                */
+
             }
         });
 
@@ -86,17 +73,6 @@ public class OtherFeaturesActivity extends AppCompatActivity implements AdapterV
         habitat.setAdapter(habitatAdapter);
         habitat.setOnItemSelectedListener(this);
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    // use standard intent to capture an image
-                    Intent cameraPhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhoto, CAMERA_REQUEST_CODE);
-                }
-                catch (ActivityNotFoundException anfe) {}
-            }
-        });
     }
 
     @Override
@@ -129,23 +105,11 @@ public class OtherFeaturesActivity extends AppCompatActivity implements AdapterV
         //do nothing
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-            bitmap = (Bitmap) data.getExtras().get("data");
-            bitmaps.add(bitmap);
-            Toast.makeText(OtherFeaturesActivity.this, "Photo ready to be uploaded", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public static ArrayList<String> getAttributesList(){
         return attributesList;
     }
     public static HashMap<String, String> getAttributesMap(){
         return attributesMap;
-    }
-    public static ArrayList<Bitmap> getBitmapsList(){
-        return bitmaps;
     }
 }
