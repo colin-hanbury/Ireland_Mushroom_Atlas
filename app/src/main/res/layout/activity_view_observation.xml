@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:id="@+id/LinearLayout1"
+android:orientation="vertical"
+android:paddingBottom="@dimen/activity_vertical_margin"
+android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+android:background="@color/colourGrey"
+android:elevation="0dp"
+tools:context=".ViewObservationActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/colourGrey"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView android:id="@+id/textViewObserveCapColour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cap Colour"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveCapColourVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveCapShape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cap Shape"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveCapShapeVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveCapSurface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cap Surface"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveCapSurfaceVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView android:id="@+id/textViewObserveGillAttachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gill Attachment"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveGillAttachmentVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveGillSpacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gill Spacing"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveGillSpacingVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveGillSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gill Size"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveGillSizeVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveGillColour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gill Colour"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveGillColourVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView android:id="@+id/textViewObserveStalkShape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stalk Shape"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveStalkShapeVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveStalkRoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stalk Root"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveStalkRootVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveStalkSurface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stalk Surface"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveStalkSurfaceVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveStalkColour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stalk Colour"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveStalkColourVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:elevation="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView android:id="@+id/textViewObserveVeilType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veil Type"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveVeilTypeVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveVeilColour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veil Colour"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveVeilColourVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveRingQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Rings"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveRingQuantityVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveRingType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ring Type"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveRingTypeVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/textViewObserveBruises"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bruises"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveBruisesVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveOdor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Odor"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveOdorVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObservePopulation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Population"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObservePopulationVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+
+        <TextView android:id="@+id/textViewObserveHabitat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habitat"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/textViewObserveHabitatVal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""/>
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>

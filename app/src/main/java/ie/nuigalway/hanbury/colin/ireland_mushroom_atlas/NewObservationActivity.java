@@ -2,23 +2,28 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +38,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class NewObservationActivity extends AppCompatActivity implements LocationListener {
+
+public class NewObservationActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
@@ -42,19 +48,18 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
     private HashMap<String, String> attributesMap;
     private StorageReference mStorage;
     private ArrayList<Bitmap> bitmaps;
-    private LocationData mushroomLocation;
+    private LatLng mushroomLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_observation);
-
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
         myStorageRef = FirebaseStorage.getInstance();
         mStorage = myStorageRef.getReference();
         bitmaps = new ArrayList<>();
-        mushroomLocation = new LocationData(0,0);
+        getLocation();
 
         checkCameraPermission();
 
@@ -184,28 +189,28 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
             public void onClick(View v) {
                 String time = String.valueOf(new Date().getTime());
 
-                if(CapFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: CapFeaturesActivity.getAttributesList()) {
+                if (CapFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : CapFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(GillFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: GillFeaturesActivity.getAttributesList()) {
+                if (GillFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : GillFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(StemFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: StemFeaturesActivity.getAttributesList()) {
+                if (StemFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : StemFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(VeilRingActivity.getAttributesList() != null) {
-                    for (String feature: VeilRingActivity.getAttributesList()) {
+                if (VeilRingActivity.getAttributesList() != null) {
+                    for (String feature : VeilRingActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(OtherFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: OtherFeaturesActivity.getAttributesList()) {
+                if (OtherFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : OtherFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
@@ -220,35 +225,35 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
                 */
 
 
-                if(CapFeaturesActivity.getAttributesMap()!= null) {
+                if (CapFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(CapFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(GillFeaturesActivity.getAttributesMap()!= null) {
+                if (GillFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(GillFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(StemFeaturesActivity.getAttributesMap()!= null) {
+                if (StemFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(StemFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(VeilRingActivity.getAttributesMap()!= null) {
+                if (VeilRingActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(VeilRingActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(OtherFeaturesActivity.getAttributesMap()!= null) {
+                if (OtherFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(OtherFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
 
 ///////////////////
-                if(TakePhotosActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: TakePhotosActivity.getBitmapsList()) {
+                if (TakePhotosActivity.getBitmapsList() != null) {
+                    for (Bitmap photo : TakePhotosActivity.getBitmapsList()) {
                         bitmaps.add(photo);
                     }
                 }
@@ -275,31 +280,40 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
                 }
                 */
 
-                if(attributesList.isEmpty() && bitmaps.isEmpty()){
-                    Toast.makeText(NewObservationActivity.this,"No data entered",
+                if (attributesList.isEmpty() && bitmaps.isEmpty()) {
+                    Toast.makeText(NewObservationActivity.this, "No data entered",
                             Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
 
                     for (int i = 0; i < attributesList.size(); i++) {
                         String tag = attributesList.get(i);
                         String type = "Other";
-                        if(tag.contains("Cap")){
+                        if (tag.contains("Cap")) {
                             type = "Cap";
-                        }
-                        else if(tag.contains("Gill")){
+                        } else if (tag.contains("Gill")) {
                             type = "Gill";
-                        }
-                        else if(tag.contains("Stalk")){
+                        } else if (tag.contains("Stalk")) {
                             type = "Stem";
                         }
+                        else if (tag.contains("Veil") || tag.contains("Ring")) {
+                            type = "VeilRing";
+                        }
+
                         dbRef.child("Mushroom Attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
+                    getLocation();
                     dbRef.child("Mushroom Locations").child(time).setValue(mushroomLocation);
                     uploadPhotos(time);
-                    Toast.makeText(NewObservationActivity.this,"Observation submitted",
-                            Toast.LENGTH_SHORT).show();
+                    if (mushroomLocation == null){
+                        Toast.makeText(NewObservationActivity.this,"Location Not Submitted with Observation",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(NewObservationActivity.this,"Location Submitted with Observation",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
                     attributesList.clear();
                     attributesMap.clear();
                     bitmaps.clear();
@@ -308,6 +322,7 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
             }
         });
     }
+
 
     public boolean checkCameraPermission(){
         if (ContextCompat.checkSelfPermission(this,
@@ -372,23 +387,33 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mushroomLocation = new LocationData(location.getLatitude(), location.getLongitude());
+    private void getLocation() {
+        //LocationDialog = new ProgressDialog(this);
+        //LocationDialog.setMessage("Loading location...");
+        //LocationDialog.show();
+
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, "Permission to access GPS denied", Toast.LENGTH_SHORT).show();
+
+            //LocationDialog.dismiss();
+            return;
+        }
+
+        SingleShotLocationProvider.requestSingleUpdate(this,
+                new SingleShotLocationProvider.LocationCallback() {
+                    @Override
+                    public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
+                        mushroomLocation = new LatLng(location.latitude, location.longitude);
+
+                        //addMarker(latLng);
+                        //LocationDialog.dismiss();
+                    }
+                });
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 }
