@@ -72,24 +72,23 @@ public class OtherFeaturesActivity extends AppCompatActivity implements
         habitatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         habitat.setAdapter(habitatAdapter);
         habitat.setOnItemSelectedListener(this);
-
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getSelectedItem().toString();
-        if(!item.contains("Select")){
+        if (!item.contains("Select")){
             String tag = parent.getTag().toString();
             boolean newTag = true;
             //check if item is new or just being modified
-            for (String currentTag: attributesList) {
-                if(currentTag == tag){
+            for (String currentTag : attributesList) {
+                if (currentTag == tag) {
                     newTag = false;
                 }
             }
             Toast.makeText(this, item + " selected from " + tag, Toast.LENGTH_SHORT).show();
             attributesMap.put(tag, item);
-            if(newTag == true) {
+            if (newTag == true) {
                 attributesList.add(tag);
             }
         }
@@ -102,9 +101,7 @@ public class OtherFeaturesActivity extends AppCompatActivity implements
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        //do nothing
     }
-
 
     public static ArrayList<String> getAttributesList(){
         return attributesList;

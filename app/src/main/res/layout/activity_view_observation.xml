@@ -23,11 +23,17 @@ tools:context=".ViewObservationActivity">
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
+        <ImageView
+            android:id="@+id/imageViewCap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <TextView android:id="@+id/textViewObserveCapColour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cap Colour"
             android:textStyle="bold"/>
+
         <TextView
             android:id="@+id/textViewObserveCapColourVal"
             android:layout_width="match_parent"
@@ -55,8 +61,6 @@ tools:context=".ViewObservationActivity">
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text=""/>
-
-
 
     </LinearLayout>
 
@@ -172,7 +176,6 @@ tools:context=".ViewObservationActivity">
     </LinearLayout>
 
     <LinearLayout
-        android:elevation="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -235,7 +238,8 @@ tools:context=".ViewObservationActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
 
         <TextView android:id="@+id/textViewObserveBruises"
             android:layout_width="wrap_content"
@@ -279,7 +283,8 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveHabitatVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text=""
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>

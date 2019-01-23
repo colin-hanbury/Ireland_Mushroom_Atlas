@@ -12,14 +12,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
-    completions."
-</string>
-    <!-- Strings related to new observations -->
-    <string-array name="capFeatures">
-        <item>Cap Shape</item>
-        <item>Cap Surface</item>
-        <item>Cap Colour</item>
-    </string-array>
+    completions."</string>
 
     <string-array name="capShapes">
         <item>Select</item>
@@ -48,6 +41,7 @@
         <item>Red</item>
         <item>White</item>
         <item>Yellow</item>
+        <item>Other</item>
     </string-array>
     <string-array name="bruises">
         <item>Select</item>
@@ -98,11 +92,13 @@
         <item>Red</item>
         <item>White</item>
         <item>Yellow</item>
+        <item>Other</item>
     </string-array>
     <string-array name="stalkShapes">
         <item>Select</item>
         <item>Enlarging</item>
         <item>Tapering</item>
+        <item>Straight</item>
     </string-array>
     <string-array name="stalkRoots">
         <item>Select</item>
@@ -132,9 +128,11 @@
         <item>Red</item>
         <item>White</item>
         <item>Yellow</item>
+        <item>Other</item>
     </string-array>
     <string-array name="veilTypes">
         <item>Select</item>
+        <item>Not Applicable</item>
         <item>Fibrous</item>
         <item>Groves</item>
         <item>Scaly</item>
@@ -142,10 +140,12 @@
     </string-array>
     <string-array name="veilColours">
         <item>Select</item>
+        <item>Not Applicable</item>
         <item>Partial</item>
         <item>Universal</item>
+        <item>Other</item>
     </string-array>
-    <string-array name="ringNumbers">
+    <string-array name="ringQuantity">
         <item>Select</item>
         <item>None</item>
         <item>1</item>
@@ -153,11 +153,11 @@
     </string-array>
     <string-array name="ringTypes">
         <item>Select</item>
+        <item>Not Applicable</item>
         <item>Other</item>
         <item>Cobwebby</item>
         <item>Evanescent</item>
         <item>Flaring</item>
-        <item>Large</item>
         <item>Large</item>
         <item>Pendant</item>
         <item>Sheathing</item>
@@ -181,6 +181,7 @@
         <item>Urban</item>
         <item>Waste</item>
         <item>Woodland</item>
+        <item>Other</item>
     </string-array>
     <string name="title_activity_new_observation">New Observation</string>
 </resources>

@@ -2,22 +2,17 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -214,16 +209,7 @@ public class NewObservationActivity extends AppCompatActivity {
                         attributesList.add(feature);
                     }
                 }
-
-
-                /*
-                HashMap<String, String> capMap = CapFeaturesActivity.getAttributesMap();
-                HashMap<String, String> stemMap = StemFeaturesActivity.getAttributesMap();
-                HashMap<String, String> gillMap = GillFeaturesActivity.getAttributesMap();
-                HashMap<String, String> veilRingMap = GillFeaturesActivity.getAttributesMap();
-                HashMap<String, String> othersMap = OtherFeaturesActivity.getAttributesMap();
-                */
-
+                ///////////////////////////////////////////////////////////////////////
 
                 if (CapFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(CapFeaturesActivity.getAttributesMap());
@@ -251,35 +237,6 @@ public class NewObservationActivity extends AppCompatActivity {
                     attributesMap.putAll(tempMap);
                 }
 
-///////////////////
-                if (TakePhotosActivity.getBitmapsList() != null) {
-                    for (Bitmap photo : TakePhotosActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                /*
-                if(CapFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: CapFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(GillFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: GillFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(StemFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: StemFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(OtherFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: OtherFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                */
-
                 if (attributesList.isEmpty() && bitmaps.isEmpty()) {
                     Toast.makeText(NewObservationActivity.this, "No data entered",
                             Toast.LENGTH_SHORT).show();
@@ -287,23 +244,26 @@ public class NewObservationActivity extends AppCompatActivity {
 
                     for (int i = 0; i < attributesList.size(); i++) {
                         String tag = attributesList.get(i);
-                        String type = "Other";
-                        if (tag.contains("Cap")) {
-                            type = "Cap";
-                        } else if (tag.contains("Gill")) {
-                            type = "Gill";
-                        } else if (tag.contains("Stalk")) {
-                            type = "Stem";
-                        }
-                        else if (tag.contains("Veil") || tag.contains("Ring")) {
-                            type = "VeilRing";
+                        String type = "";
+                        if (tag != null) {
+                            if (tag.contains("Cap")) {
+                                type = "cap";
+                            } else if (tag.contains("Gill")) {
+                                type = "gill";
+                            } else if (tag.contains("Stalk")) {
+                                type = "stem";
+                            } else if (tag.contains("Veil") || tag.contains("Ring")) {
+                                type = "veil_ring";
+                            } else {
+                                type = "other";
+                            }
                         }
 
-                        dbRef.child("Mushroom Attributes:").child(time).child(type).child(tag).
+                        dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
                     getLocation();
-                    dbRef.child("Mushroom Locations").child(time).setValue(mushroomLocation);
+                    dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
                     uploadPhotos(time);
                     if (mushroomLocation == null){
                         Toast.makeText(NewObservationActivity.this,"Location Not Submitted with Observation",
@@ -365,25 +325,102 @@ public class NewObservationActivity extends AppCompatActivity {
     }
 
     private void uploadPhotos(String time){
-        if(!bitmaps.isEmpty()) {
-            for (Bitmap bmap : bitmaps) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] b = stream.toByteArray();
-                String newTime = String.valueOf(new Date().getTime());
-                mStorage.child("Images").child(time).child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (!TakePhotosActivity.getBitmapsLists().isEmpty()) {
+            if (!TakePhotosActivity.getBitmapsLists().get("cap").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("cap")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("cap").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
-            Toast.makeText(NewObservationActivity.this, "Photo(s) uploaded", Toast.LENGTH_SHORT).show();
+            if (!TakePhotosActivity.getBitmapsLists().get("gill").isEmpty()){
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("gill")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("gill").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("stem").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("stem")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("stem").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("veilRing").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("veilRing")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("veilRing").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("other").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("other")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("other").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
         }
     }
 

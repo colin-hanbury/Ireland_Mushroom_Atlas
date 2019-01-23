@@ -16,6 +16,14 @@ tools:context=".VeilRingActivity">
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Veil and Ring Features"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
+
     <TextView android:id="@+id/textVeilType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,17 +48,17 @@ tools:context=".VeilRingActivity">
         android:spinnerMode="dropdown"
         android:tag="Veil_Colour"/>
 
-    <TextView android:id="@+id/textRingNumber"
+    <TextView android:id="@+id/textRingQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Ring Number:" />
+        android:text="Select Ring Quantity:" />
     <Spinner
-        android:id="@+id/spinnerRingNumber"
+        android:id="@+id/spinnerRingQuantity"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:background="@drawable/textbox_border"
         android:spinnerMode="dropdown"
-        android:tag="Ring_Number"/>
+        android:tag="Ring_Quantity"/>
 
     <TextView android:id="@+id/textRingType"
         android:layout_width="wrap_content"

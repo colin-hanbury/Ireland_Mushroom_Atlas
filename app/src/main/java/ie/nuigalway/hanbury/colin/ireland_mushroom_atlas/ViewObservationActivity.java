@@ -3,33 +3,42 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ViewObservationActivity extends AppCompatActivity {
 
-
-
     private DatabaseReference database;
+
     private DatabaseReference dbRefCap;
-    //private DatabaseReference dbRefStem;
     private DatabaseReference dbRefGill;
+    private DatabaseReference dbRefStem;
+    private DatabaseReference dbRefVeilRing;
+    private DatabaseReference dbRefOther;
 
+    private StorageReference storage;
 
+    private StorageReference sRefCap;
+    private StorageReference sRefGill;
+    private StorageReference sRefStem;
+    private StorageReference sRefVeilRing;
+    private StorageReference sRefOther;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_observation);
+
+
+        ImageView imageCap = findViewById(R.id.imageViewCap);
 
         final TextView capColour = (TextView) findViewById(R.id.textViewObserveCapColourVal);
         final TextView capShape = (TextView) findViewById(R.id.textViewObserveCapShapeVal);
@@ -58,10 +67,13 @@ public class ViewObservationActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String observationID = bundle.getString("id");
 
-
+        storage = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference();
-        //"1547635105459"
-        dbRefCap = database.child("Mushroom Attributes:").child(observationID).child("Cap").getRef();
+
+        sRefCap = storage.child("mushroom_photos").child(observationID).child("cap");
+        //GlideApp.with(ViewObservationActivity.this).load(sRefCap).into(imageCap);
+
+        dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
 
         dbRefCap.addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,7 +103,7 @@ public class ViewObservationActivity extends AppCompatActivity {
         });
 
 
-        dbRefGill = database.child("Mushroom Attributes:").child(observationID).child("Gill").getRef();
+        dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
         dbRefGill.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,8 +135,8 @@ public class ViewObservationActivity extends AppCompatActivity {
             }
         });
 
-        dbRefGill = database.child("Mushroom Attributes:").child(observationID).child("Stem").getRef();
-        dbRefGill.addValueEventListener(new ValueEventListener() {
+        dbRefStem = database.child("mushroom_attributes:").child(observationID).child("stem").getRef();
+        dbRefStem.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
@@ -146,7 +158,7 @@ public class ViewObservationActivity extends AppCompatActivity {
                         }
                     }
                 }
-                dbRefGill.removeEventListener(this);
+                dbRefStem.removeEventListener(this);
             }
 
             @Override
@@ -155,30 +167,30 @@ public class ViewObservationActivity extends AppCompatActivity {
             }
         });
 
-        dbRefGill = database.child("Mushroom Attributes:").child(observationID).child("Gill").getRef();
-        dbRefGill.addValueEventListener(new ValueEventListener() {
+        dbRefVeilRing = database.child("mushroom_attributes:").child(observationID).child("veil_ring").getRef();
+        dbRefVeilRing.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String gill = capSnapshot.getValue(String.class);
+                    String veilRing = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (gill != null) {
+                    if (veilRing != null) {
 
-                        if (key.contains("Gill_Attachment")) {
-                            gillAttachment.setText(gill);
+                        if (key.contains("Veil_Type")) {
+                            veilType.setText(veilRing);
                         }
-                        if (key.contains("Gill_Spacing")) {
-                            gillSpacing.setText(gill);
+                        if (key.contains("Veil_Colour")) {
+                            veilColour.setText(veilRing);
                         }
-                        if (key.contains("Gill_Size")) {
-                            gillSize.setText(gill);
+                        if (key.contains("Ring_Quantity")) {
+                            ringQuantity.setText(veilRing);
                         }
-                        if (key.contains("Gill_Colour")) {
-                            gillColour.setText(gill);
+                        if (key.contains("Ring_Type")) {
+                            ringType.setText(veilRing);
                         }
                     }
                 }
-                dbRefGill.removeEventListener(this);
+                dbRefVeilRing.removeEventListener(this);
             }
 
             @Override
@@ -187,32 +199,30 @@ public class ViewObservationActivity extends AppCompatActivity {
             }
         });
 
-        dbRefGill = database.child("Mushroom Attributes:").child(observationID).child("Gill").getRef();
-        dbRefGill.addValueEventListener(new ValueEventListener() {
+        dbRefOther = database.child("mushroom_attributes:").child(observationID).child("other").getRef();
+        dbRefOther.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String gill = capSnapshot.getValue(String.class);
+                    String other = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (gill != null) {
-
-                        if (key.contains("Gill_Attachment")) {
-                            gillAttachment.setText(gill);
+                    if (other != null) {
+                        if (key.contains("Bruises")) {
+                            bruises.setText(other);
                         }
-                        if (key.contains("Gill_Spacing")) {
-                            gillSpacing.setText(gill);
+                        if (key.contains("Odor")) {
+                            odor.setText(other);
                         }
-                        if (key.contains("Gill_Size")) {
-                            gillSize.setText(gill);
+                        if (key.contains("Population")) {
+                            population.setText(other);
                         }
-                        if (key.contains("Gill_Colour")) {
-                            gillColour.setText(gill);
+                        if (key.contains("Habitat")) {
+                            habitat.setText(other);
                         }
                     }
                 }
-                dbRefGill.removeEventListener(this);
+                dbRefOther.removeEventListener(this);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
