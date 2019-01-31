@@ -16,11 +16,14 @@
 
     <string-array name="capShapes">
         <item>Select</item>
+        <item>Cylindrical</item>
         <item>Bell</item>
         <item>Conical</item>
+        <item>Convex</item>
         <item>Flat</item>
+        <item>Deeply Depressed</item>
+        <item>Depressed</item>
         <item>Knobbed</item>
-        <item>Sunken</item>
     </string-array>
     <string-array name="capSurfaces">
         <item>Select</item>
@@ -32,7 +35,6 @@
     <string-array name="capColours">
         <item>Select</item>
         <item>Brown</item>
-        <item>Buff</item>
         <item>Cinnamon</item>
         <item>Grey</item>
         <item>Green</item>
@@ -50,7 +52,6 @@
     </string-array>
     <string-array name="odor">
         <item>Select</item>
-        <item>None</item>
         <item>Almond</item>
         <item>Anise</item>
         <item>Cresote</item>
@@ -59,18 +60,20 @@
         <item>Musty</item>
         <item>Pungent</item>
         <item>Spicy</item>
+        <item>None</item>
     </string-array>
     <string-array name="gillAttachments">
         <item>Select</item>
-        <item>Attached</item>
-        <item>Descending</item>
         <item>Free</item>
+        <item>Narrowly Attached</item>
         <item>Notched</item>
+        <item>Broadly Attached</item>
+        <item>Descenting</item>
     </string-array>
     <string-array name="gillSpacings">
         <item>Select</item>
-        <item>Close</item>
         <item>Crowded</item>
+        <item>Close</item>
         <item>Distant</item>
     </string-array>
     <string-array name="gillSizes">
@@ -82,8 +85,6 @@
         <item>Select</item>
         <item>Black</item>
         <item>Brown</item>
-        <item>Buff</item>
-        <item>Chocolate</item>
         <item>Grey</item>
         <item>Green</item>
         <item>Orange</item>
@@ -94,34 +95,34 @@
         <item>Yellow</item>
         <item>Other</item>
     </string-array>
-    <string-array name="stalkShapes">
+    <string-array name="stemShapes">
         <item>Select</item>
-        <item>Enlarging</item>
-        <item>Tapering</item>
         <item>Straight</item>
+        <item>Enlarging(widens)</item>
+        <item>Tapering(narrows)</item>
+
     </string-array>
-    <string-array name="stalkRoots">
+    <string-array name="stemRoots">
         <item>Select</item>
-        <item>Bulbous</item>
-        <item>Club</item>
-        <item>Cup</item>
         <item>Equal</item>
-        <item>Rhizomorphs</item>
-        <item>Rooted</item>
-        <item>Missing</item>
+        <item>Club</item>
+        <item>Bulbous</item>
+        <item>Volva</item>
+        <item>Rooting</item>
+        <item>Rhizoids</item>
+        <item>None</item>
     </string-array>
-    <string-array name="stalkSurfaces">
+    <string-array name="stemSurfaces">
         <item>Select</item>
-        <item>Fibrous</item>
+        <item>Smooth</item>
+        <item>Coarse</item>
         <item>Scaly</item>
         <item>Silky</item>
-        <item>Smooth</item>
+
     </string-array>
-    <string-array name="stalkColours">
+    <string-array name="stemColours">
         <item>Select</item>
         <item>Brown</item>
-        <item>Buff</item>
-        <item>Cinnamon</item>
         <item>Grey</item>
         <item>Orange</item>
         <item>Pink</item>
@@ -132,11 +133,11 @@
     </string-array>
     <string-array name="veilTypes">
         <item>Select</item>
-        <item>Not Applicable</item>
+        <item>Smooth</item>
         <item>Fibrous</item>
         <item>Groves</item>
         <item>Scaly</item>
-        <item>Smooth</item>
+        <item>Not Applicable</item>
     </string-array>
     <string-array name="veilColours">
         <item>Select</item>
@@ -150,18 +151,18 @@
         <item>None</item>
         <item>1</item>
         <item>2</item>
+        <item>3 or more</item>
     </string-array>
     <string-array name="ringTypes">
         <item>Select</item>
+        <item>Pendant</item>
+        <item>Flaring</item>
+        <item>Sheathing</item>
+        <item>Double</item>
+        <item>Cobwebby</item>
+        <item>Ring Zone</item>
         <item>Not Applicable</item>
         <item>Other</item>
-        <item>Cobwebby</item>
-        <item>Evanescent</item>
-        <item>Flaring</item>
-        <item>Large</item>
-        <item>Pendant</item>
-        <item>Sheathing</item>
-        <item>Zone</item>
     </string-array>
     <string-array name="populations">
         <item>Select</item>

@@ -1,5 +1,6 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,12 +23,33 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
+    private Dialog gillAttachmentDialog;
+    private Button gillAttachmentClose;
+    private Button gillAttachmentButton;
+    private Button gillSpacingButton;
+    private Dialog gillSpacingDialog;
+    private Button gillSpacingClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gill_features);
 
+        gillAttachmentButton = findViewById(R.id.gillAttachmentsButton);
+        gillAttachmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpGillAttachments();
+            }
+        });
+
+        gillSpacingButton = findViewById(R.id.gillSpacingsButton);
+        gillSpacingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpGillSpacings();
+            }
+        });
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
 
@@ -101,6 +124,33 @@ public class GillFeaturesActivity extends AppCompatActivity implements AdapterVi
             attributesMap.remove(tag);
             attributesList.remove(tag);
         }
+    }
+
+    private void showPopUpGillAttachments() {
+        gillAttachmentDialog = new Dialog(GillFeaturesActivity.this);
+        gillAttachmentDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        gillAttachmentDialog.setContentView(R.layout.pop_up_gill_attachment);
+        gillAttachmentClose = gillAttachmentDialog.findViewById(R.id.gillAttachmentsCloseButton);
+        gillAttachmentClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gillAttachmentDialog.cancel();
+            }
+        });
+        gillAttachmentDialog.show();
+    }
+    private void showPopUpGillSpacings() {
+        gillSpacingDialog = new Dialog(GillFeaturesActivity.this);
+        gillSpacingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        gillSpacingDialog.setContentView(R.layout.pop_up_gill_spacing);
+        gillSpacingClose = gillSpacingDialog.findViewById(R.id.gillSpacingsCloseButton);
+        gillSpacingClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gillSpacingDialog.cancel();
+            }
+        });
+        gillSpacingDialog.show();
     }
 
     @Override

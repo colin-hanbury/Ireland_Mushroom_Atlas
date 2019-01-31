@@ -1,12 +1,10 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,12 +19,24 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
+    private Button capShapeButton;
+    private Button capShapeClose;
+    private View view;
+    private Dialog capShapeDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cap_features);
+
+        capShapeButton = findViewById(R.id.capShapesButton);
+        capShapeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpCapShape();
+            }
+        });
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
@@ -51,7 +61,8 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
         capShape.setAdapter(capShapeAdapter);
         capShape.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> capSurfaceAdapter = new ArrayAdapter<String>(
+
+        ArrayAdapter < String > capSurfaceAdapter = new ArrayAdapter<String>(
                 CapFeaturesActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
                 getResources().getStringArray(R.array.capSurfaces));
@@ -66,7 +77,20 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
         capColourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         capColour.setAdapter(capColourAdapter);
         capColour.setOnItemSelectedListener(this);
+    }
 
+    private void showPopUpCapShape() {
+        capShapeDialog = new Dialog(CapFeaturesActivity.this);
+        capShapeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        capShapeDialog.setContentView(R.layout.pop_up_cap_shape);
+        capShapeClose = capShapeDialog.findViewById(R.id.capShapeCloseButton);
+        capShapeClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                capShapeDialog.cancel();
+            }
+        });
+        capShapeDialog.show();
     }
 
     @Override
@@ -95,11 +119,7 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        //do nothing
-    }
-
-
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     public static ArrayList<String> getAttributesList(){
         return attributesList;

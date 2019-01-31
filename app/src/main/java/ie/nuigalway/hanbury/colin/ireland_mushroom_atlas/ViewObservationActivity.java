@@ -3,7 +3,10 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,8 +40,13 @@ public class ViewObservationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_observation);
 
-
+        /*
         ImageView imageCap = findViewById(R.id.imageViewCap);
+        GridView capImages = findViewById(R.id.gridViewCap);
+        ArrayAdapter<ImageView> capAdapter = new ArrayAdapter<ImageView>(ViewObservationActivity.this,
+                android.R.layout.simple_list_item_1, getResources().get)
+        capImages.setAdapter();
+        */
 
         final TextView capColour = (TextView) findViewById(R.id.textViewObserveCapColourVal);
         final TextView capShape = (TextView) findViewById(R.id.textViewObserveCapShapeVal);

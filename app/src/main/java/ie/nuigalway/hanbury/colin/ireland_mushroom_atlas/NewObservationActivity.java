@@ -250,7 +250,7 @@ public class NewObservationActivity extends AppCompatActivity {
                                 type = "cap";
                             } else if (tag.contains("Gill")) {
                                 type = "gill";
-                            } else if (tag.contains("Stalk")) {
+                            } else if (tag.contains("Stem")) {
                                 type = "stem";
                             } else if (tag.contains("Veil") || tag.contains("Ring")) {
                                 type = "veil_ring";

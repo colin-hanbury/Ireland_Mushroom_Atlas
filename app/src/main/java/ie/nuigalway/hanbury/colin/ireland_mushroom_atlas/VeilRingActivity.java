@@ -1,8 +1,10 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,11 +19,22 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
+    private Dialog ringTypeTypeDialog;
+    private Button ringTypeClose;
+    private Button ringTypeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_veil_ring);
+
+        ringTypeButton = findViewById(R.id.ringTypesButton);
+        ringTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpRingTypes();
+            }
+        });
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
@@ -70,6 +83,20 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
         ringTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ringType.setAdapter(ringTypeAdapter);
         ringType.setOnItemSelectedListener(this);
+    }
+
+    private void showPopUpRingTypes() {
+        ringTypeTypeDialog = new Dialog(VeilRingActivity.this);
+        ringTypeTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ringTypeTypeDialog.setContentView(R.layout.pop_up_ring_type);
+        ringTypeClose = ringTypeTypeDialog.findViewById(R.id.ringTypesCloseButton);
+        ringTypeClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringTypeTypeDialog.cancel();
+            }
+        });
+        ringTypeTypeDialog.show();
     }
 
     @Override

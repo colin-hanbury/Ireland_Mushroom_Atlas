@@ -133,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setUpMap() {
 
-        final DatabaseReference ref = mDatabase.child("Mushroom Locations").getRef();
+        final DatabaseReference ref = mDatabase.child("mushroom_locations").getRef();
         // Attach a listener to read the data at our posts reference
         ref.addValueEventListener(new ValueEventListener() {
             @Override
