@@ -1,14 +1,19 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +22,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class ViewObservationActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+
+public class ViewObservationActivity extends AppCompatActivity{
 
     private DatabaseReference database;
 
@@ -30,23 +38,31 @@ public class ViewObservationActivity extends AppCompatActivity {
     private StorageReference storage;
 
     private StorageReference sRefCap;
+    private ArrayList<Bitmap> capImages;
     private StorageReference sRefGill;
     private StorageReference sRefStem;
     private StorageReference sRefVeilRing;
     private StorageReference sRefOther;
+    private GridView gridViewCap;
+    private DatabaseReference dbRefCapPhoto;
+    private String observationID;
+    private String imageID;
+    private RecyclerView recyclerView;
+    private ImageAdapter imageAdapter;
+    private ArrayList<String> urls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_observation);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        /*
-        ImageView imageCap = findViewById(R.id.imageViewCap);
-        GridView capImages = findViewById(R.id.gridViewCap);
-        ArrayAdapter<ImageView> capAdapter = new ArrayAdapter<ImageView>(ViewObservationActivity.this,
-                android.R.layout.simple_list_item_1, getResources().get)
-        capImages.setAdapter();
-        */
+        final long ONE_MEGABYTE = 1024 * 1024;
+
+        capImages = new ArrayList<>();
+        urls = new ArrayList<>();
 
         final TextView capColour = (TextView) findViewById(R.id.textViewObserveCapColourVal);
         final TextView capShape = (TextView) findViewById(R.id.textViewObserveCapShapeVal);
@@ -73,13 +89,46 @@ public class ViewObservationActivity extends AppCompatActivity {
         final TextView habitat = (TextView) findViewById(R.id.textViewObserveHabitatVal);
 
         Bundle bundle = getIntent().getExtras();
-        String observationID = bundle.getString("id");
+        observationID = bundle.getString("id");
 
         storage = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference();
+        //+imageID+".jpeg"
+        //String imageTag = getCapTimes().get(observationID);
+        dbRefCapPhoto = database.child("mushroom_photos").child(observationID).child("cap").getRef();
 
-        sRefCap = storage.child("mushroom_photos").child(observationID).child("cap");
-        //GlideApp.with(ViewObservationActivity.this).load(sRefCap).into(imageCap);
+        dbRefCapPhoto.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
+                   imageID = capSnapshot.getValue(String.class);
+                   urls.add(imageID);
+                   /*
+                   sRefCap = storage.child("mushroom_photos/" + observationID + "/cap/" + imageID);
+                   sRefCap.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                       @Override
+                       public void onSuccess(byte[] bytes) {
+                           Bitmap capImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                           capImages.add(capImage);
+                       }
+                   }).addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception exception) {
+                           Toast.makeText(ViewObservationActivity.this,
+                                   "Failed to load Image: " + imageID, Toast.LENGTH_LONG).show();
+                       }
+                   });
+                   */
+               }
+               imageAdapter = new ImageAdapter(ViewObservationActivity.this, urls);
+               recyclerView.setAdapter(imageAdapter);
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+
 
         dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
 
@@ -109,7 +158,6 @@ public class ViewObservationActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
 
         dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
         dbRefGill.addValueEventListener(new ValueEventListener() {

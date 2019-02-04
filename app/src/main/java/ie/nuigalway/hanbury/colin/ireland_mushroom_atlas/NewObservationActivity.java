@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -25,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -44,16 +47,31 @@ public class NewObservationActivity extends AppCompatActivity {
     private StorageReference mStorage;
     private ArrayList<Bitmap> bitmaps;
     private LatLng mushroomLocation;
+    private String capURL = "";
+    private String gillURL = "gillPhoto";
+    private String stemURL = "stemPhoto";
+    private String veilRingURL = "veilRingPhoto";
+    private String otherURL = "otherPhoto";
+
+    private ProgressBar mProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_observation);
+        mProgressBar = findViewById(R.id.progressBar);
+
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
         myStorageRef = FirebaseStorage.getInstance();
         mStorage = myStorageRef.getReference();
+
         bitmaps = new ArrayList<>();
+        attributesList = new ArrayList<>();
+        attributesMap = new HashMap<>();
+
+
         getLocation();
 
         checkCameraPermission();
@@ -74,8 +92,7 @@ public class NewObservationActivity extends AppCompatActivity {
 
         Button submit = findViewById(R.id.buttonSubmit);
 
-        attributesList = new ArrayList<>();
-        attributesMap = new HashMap<>();
+
 
         takePhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,6 +300,178 @@ public class NewObservationActivity extends AppCompatActivity {
         });
     }
 
+    private void uploadPhotos(final String time){
+
+        if (!TakePhotosActivity.getBitmapsLists().isEmpty()) {
+            if (!TakePhotosActivity.getBitmapsLists().get("cap").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("cap")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    final String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("cap").child(newTime)
+                            .putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() { }
+                            }, 500);
+                            mProgressBar.setProgress(0);
+                            capURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                            dbRef.child("mushroom_photos").child(time).child("cap").child(newTime)
+                                    .setValue(capURL);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this,
+                                    "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("gill").isEmpty()){
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("gill")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("gill").child(newTime)
+                            .putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() { }
+                            }, 500);
+                            mProgressBar.setProgress(0);
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                            String imageUrl = urlTask.toString();
+                            gillURL = imageUrl;
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this,
+                                    "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressBar.setProgress((int) progress);
+                        }
+                    });
+                    dbRef.child("mushroom_photos").child(time).child("gill").child(newTime)
+                            .setValue(gillURL);
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("stem").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("stem")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("stem").child(newTime)
+                            .putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                            String imageUrl = urlTask.toString();
+                            stemURL = imageUrl;
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this,
+                                    "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dbRef.child("mushroom_photos").child(time).child("stem").child(newTime)
+                            .setValue(stemURL);
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("veilRing").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("veilRing")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("veilRing").child(newTime)
+                            .putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                            String imageUrl = urlTask.toString();
+                            veilRingURL = imageUrl;
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this,
+                                    "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dbRef.child("mushroom_photos").child(time).child("veilRing").child(newTime)
+                            .setValue(veilRingURL);
+                }
+            }
+            if (!TakePhotosActivity.getBitmapsLists().get("other").isEmpty()) {
+                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("other")) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] b = stream.toByteArray();
+                    String newTime = String.valueOf(new Date().getTime());
+                    mStorage.child("mushroom_photos").child(time).child("other").child(newTime)
+                            .putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                            String imageUrl = urlTask.toString();
+                            otherURL = imageUrl;
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewObservationActivity.this,
+                                    "Photo upload failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dbRef.child("mushroom_photos").child(time).child("other").child(newTime)
+                            .setValue(otherURL);
+                }
+            }
+        }
+    }
+
+    private void getLocation() {
+
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, "Permission to access GPS denied", Toast.LENGTH_SHORT).show();
+
+            //LocationDialog.dismiss();
+            return;
+        }
+
+        SingleShotLocationProvider.requestSingleUpdate(this,
+                new SingleShotLocationProvider.LocationCallback() {
+                    @Override
+                    public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
+                        mushroomLocation = new LatLng(location.latitude, location.longitude);
+
+                        //addMarker(latLng);
+                        //LocationDialog.dismiss();
+                    }
+                });
+    }
 
     public boolean checkCameraPermission(){
         if (ContextCompat.checkSelfPermission(this,
@@ -323,134 +512,4 @@ public class NewObservationActivity extends AppCompatActivity {
             return true;
         }
     }
-
-    private void uploadPhotos(String time){
-        if (!TakePhotosActivity.getBitmapsLists().isEmpty()) {
-            if (!TakePhotosActivity.getBitmapsLists().get("cap").isEmpty()) {
-                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("cap")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] b = stream.toByteArray();
-                    String newTime = String.valueOf(new Date().getTime());
-                    mStorage.child("mushroom_photos").child(time).child("cap").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-            if (!TakePhotosActivity.getBitmapsLists().get("gill").isEmpty()){
-                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("gill")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] b = stream.toByteArray();
-                    String newTime = String.valueOf(new Date().getTime());
-                    mStorage.child("mushroom_photos").child(time).child("gill").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-            if (!TakePhotosActivity.getBitmapsLists().get("stem").isEmpty()) {
-                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("stem")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] b = stream.toByteArray();
-                    String newTime = String.valueOf(new Date().getTime());
-                    mStorage.child("mushroom_photos").child(time).child("stem").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-            if (!TakePhotosActivity.getBitmapsLists().get("veilRing").isEmpty()) {
-                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("veilRing")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] b = stream.toByteArray();
-                    String newTime = String.valueOf(new Date().getTime());
-                    mStorage.child("mushroom_photos").child(time).child("veilRing").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-            if (!TakePhotosActivity.getBitmapsLists().get("other").isEmpty()) {
-                for (Bitmap photo : TakePhotosActivity.getBitmapsLists().get("other")) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] b = stream.toByteArray();
-                    String newTime = String.valueOf(new Date().getTime());
-                    mStorage.child("mushroom_photos").child(time).child("other").child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    private void getLocation() {
-        //LocationDialog = new ProgressDialog(this);
-        //LocationDialog.setMessage("Loading location...");
-        //LocationDialog.show();
-
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-            Toast.makeText(this, "Permission to access GPS denied", Toast.LENGTH_SHORT).show();
-
-            //LocationDialog.dismiss();
-            return;
-        }
-
-        SingleShotLocationProvider.requestSingleUpdate(this,
-                new SingleShotLocationProvider.LocationCallback() {
-                    @Override
-                    public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
-                        mushroomLocation = new LatLng(location.latitude, location.longitude);
-
-                        //addMarker(latLng);
-                        //LocationDialog.dismiss();
-                    }
-                });
-    }
-
-
 }
