@@ -1,12 +1,10 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,11 +19,22 @@ public class StemFeaturesActivity extends AppCompatActivity implements AdapterVi
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
+    private Dialog stemRootTypeDialog;
+    private Button stemRootTypeClose;
+    private Button stemRootTypeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stem_features);
+
+        stemRootTypeButton = findViewById(R.id.stemRootButton);
+        stemRootTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpStemRootTypes();
+            }
+        });
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
@@ -40,42 +49,56 @@ public class StemFeaturesActivity extends AppCompatActivity implements AdapterVi
         });
 
 
-        Spinner stalkShape = findViewById(R.id.spinnerStalkShape);
-        Spinner stalkRoot = findViewById(R.id.spinnerStalkRoot);
-        Spinner stalkSurface = findViewById(R.id.spinnerStalkSurface);
-        Spinner stalkColour = findViewById(R.id.spinnerStalkColour);
+        Spinner stemShape = findViewById(R.id.spinnerStemShape);
+        Spinner stemRoot = findViewById(R.id.spinnerStemRoot);
+        Spinner stemSurface = findViewById(R.id.spinnerStemSurface);
+        Spinner stemColour = findViewById(R.id.spinnerStemColour);
 
-        ArrayAdapter<String> stalkShapeAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stemShapeAdapter = new ArrayAdapter<String>(
                 StemFeaturesActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkShapes));
-        stalkShapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkShape.setAdapter(stalkShapeAdapter);
-        stalkShape.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.stemShapes));
+        stemShapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stemShape.setAdapter(stemShapeAdapter);
+        stemShape.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkRootAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stemRootAdapter = new ArrayAdapter<String>(
                 StemFeaturesActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkRoots));
-        stalkRootAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkRoot.setAdapter(stalkRootAdapter);
-        stalkRoot.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.stemRoots));
+        stemRootAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stemRoot.setAdapter(stemRootAdapter);
+        stemRoot.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkSurfaceAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stemSurfaceAdapter = new ArrayAdapter<String>(
                 StemFeaturesActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkSurfaces));
-        stalkSurfaceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkSurface.setAdapter(stalkSurfaceAdapter);
-        stalkSurface.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.stemSurfaces));
+        stemSurfaceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stemSurface.setAdapter(stemSurfaceAdapter);
+        stemSurface.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> stalkColourAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stemColourAdapter = new ArrayAdapter<String>(
                 StemFeaturesActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.stalkColours));
-        stalkColourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stalkColour.setAdapter(stalkColourAdapter);
-        stalkColour.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.stemColours));
+        stemColourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stemColour.setAdapter(stemColourAdapter);
+        stemColour.setOnItemSelectedListener(this);
+    }
+
+    private void showPopUpStemRootTypes() {
+        stemRootTypeDialog = new Dialog(StemFeaturesActivity.this);
+        stemRootTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        stemRootTypeDialog.setContentView(R.layout.pop_up_stem_root_type);
+        stemRootTypeClose = stemRootTypeDialog.findViewById(R.id.stemRootTypesCloseButton);
+        stemRootTypeClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stemRootTypeDialog.cancel();
+            }
+        });
+        stemRootTypeDialog.show();
     }
 
     @Override

@@ -1,61 +1,111 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 public class TakePhotosActivity extends AppCompatActivity {
 
+    private boolean capPhoto;
     private Button addPhotoCap;
-    //private Bitmap bitmapCap;
-    //private static ArrayList<Bitmap> bitmapsCap;
+    private static ArrayList<String> pathsCapFiles;
+
+    private boolean gillPhoto;
     private Button addPhotoGill;
-    //private Bitmap bitmapGill;
-    //private static ArrayList<Bitmap> bitmapsGill;
+    private static ArrayList<String> pathsGillFiles;
+
+    private boolean stemPhoto;
     private Button addPhotoStem;
-    //private Bitmap bitmapStem;
-    //private static ArrayList<Bitmap> bitmapsStem;
+    private static ArrayList<String> pathsStemFiles;
+
+    private boolean veilRingPhoto;
     private Button addPhotoVeilRing;
-    //private Bitmap bitmapVeilRing;
-    //private static ArrayList<Bitmap> bitmapsVeilRing;
+    private static ArrayList<String> pathsVeilRingFiles;
+
+    private boolean otherPhoto;
     private Button addPhotoOther;
-    //private Bitmap bitmapOther;
-    //private static ArrayList<Bitmap> bitmapsOther;
+    private static ArrayList<String> pathsOtherFiles;
 
     private Button saveAndReturn;
-    private Bitmap bitmap;
-    private static ArrayList<Bitmap> bitmaps;
+    private Uri uriCap;
+    private Uri uriGill;
+    private Uri uriStem;
+    private Uri uriVeilRing;
+    private Uri uriOther;
+    private static HashMap<String, ArrayList<String>> paths;
 
     private static final int CAMERA_REQUEST_CODE = 1;
-
+    private Context context;
+    private String mCurrentPhotoPath;
+    private String ioException;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photos);
-        bitmaps = new ArrayList<>();
+
+        checkReadPermission();
+        checkWritePermission();
+
+        capPhoto = false;
+        gillPhoto = false;
+        stemPhoto = false;
+        veilRingPhoto = false;
+        otherPhoto = false;
+        pathsCapFiles = new ArrayList<>();
+        pathsGillFiles = new ArrayList<>();
+        pathsStemFiles = new ArrayList<>();
+        pathsVeilRingFiles = new ArrayList<>();
+        pathsOtherFiles = new ArrayList<>();
+        paths = new HashMap<>();
+        context = TakePhotosActivity.this;
 
         addPhotoCap = findViewById(R.id.buttonAddCapPhotos);
         addPhotoCap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                capPhoto = true;
+                // use standard intent to capture an image
+                Intent cameraPhotoCap = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    // use standard intent to capture an image
-                    Intent cameraPhotoCap = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhotoCap, CAMERA_REQUEST_CODE);
+                    uriCap = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
                     Toast.makeText(TakePhotosActivity.this,"Exception",
                             Toast.LENGTH_LONG);
+                    capPhoto = false;
                 }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    capPhoto = false;
+                }
+                cameraPhotoCap.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoCap.putExtra(MediaStore.EXTRA_OUTPUT, uriCap);
+                startActivityForResult(cameraPhotoCap, CAMERA_REQUEST_CODE);
             }
         });
 
@@ -63,15 +113,26 @@ public class TakePhotosActivity extends AppCompatActivity {
         addPhotoGill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gillPhoto = true;
+                Intent cameraPhotoGill = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    // use standard intent to capture an image
-                    Intent cameraPhotoGill = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhotoGill, CAMERA_REQUEST_CODE);
+                    uriGill = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
                     Toast.makeText(TakePhotosActivity.this,"Exception",
-                        Toast.LENGTH_LONG);
+                            Toast.LENGTH_LONG);
+                    gillPhoto = false;
                 }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    gillPhoto = false;
+                }
+                cameraPhotoGill.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoGill.putExtra(MediaStore.EXTRA_OUTPUT, uriGill);
+                startActivityForResult(cameraPhotoGill, CAMERA_REQUEST_CODE);
             }
         });
 
@@ -79,15 +140,26 @@ public class TakePhotosActivity extends AppCompatActivity {
         addPhotoStem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stemPhoto = true;
+                Intent cameraPhotoStem = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    // use standard intent to capture an image
-                    Intent cameraPhotoStem = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhotoStem, CAMERA_REQUEST_CODE);
+                    uriStem = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
                     Toast.makeText(TakePhotosActivity.this,"Exception",
                             Toast.LENGTH_LONG);
+                    stemPhoto = false;
                 }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    stemPhoto = false;
+                }
+                cameraPhotoStem.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoStem.putExtra(MediaStore.EXTRA_OUTPUT, uriStem);
+                startActivityForResult(cameraPhotoStem, CAMERA_REQUEST_CODE);
             }
         });
 
@@ -95,32 +167,53 @@ public class TakePhotosActivity extends AppCompatActivity {
         addPhotoVeilRing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                veilRingPhoto = true;
+                Intent cameraPhotoVeilRing = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    // use standard intent to capture an image
-                    Intent cameraPhotoVeilRing = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhotoVeilRing, CAMERA_REQUEST_CODE);
-                }
-                catch (ActivityNotFoundException anfe) {
-                    Toast.makeText(TakePhotosActivity.this,"Exception",
-                        Toast.LENGTH_LONG);
-                }
-            }
-        });
-
-        addPhotoOther = findViewById(R.id.buttonAddOtherPhotos);
-
-        addPhotoOther.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    // use standard intent to capture an image
-                    Intent cameraPhotoOther = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraPhotoOther, CAMERA_REQUEST_CODE);
+                    uriVeilRing = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
                     Toast.makeText(TakePhotosActivity.this,"Exception",
                             Toast.LENGTH_LONG);
+                    veilRingPhoto = false;
                 }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    veilRingPhoto = false;
+                }
+                cameraPhotoVeilRing.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoVeilRing.putExtra(MediaStore.EXTRA_OUTPUT, uriVeilRing);
+                startActivityForResult(cameraPhotoVeilRing, CAMERA_REQUEST_CODE);
+            }
+        });
+
+        addPhotoOther = findViewById(R.id.buttonAddOtherPhotos);
+        addPhotoOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                otherPhoto = true;
+                Intent cameraPhotoOther = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    uriOther = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                }
+                catch (ActivityNotFoundException anfe) {
+                    Toast.makeText(TakePhotosActivity.this,"Exception",
+                            Toast.LENGTH_LONG);
+                    otherPhoto = false;
+                }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    otherPhoto = false;
+                }
+                cameraPhotoOther.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoOther.putExtra(MediaStore.EXTRA_OUTPUT, uriOther);
+                startActivityForResult(cameraPhotoOther, CAMERA_REQUEST_CODE);
             }
         });
 
@@ -135,17 +228,140 @@ public class TakePhotosActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-            bitmap = (Bitmap) data.getExtras().get("data");
-            bitmaps.add(bitmap);
+        if(requestCode == CAMERA_REQUEST_CODE){
+            if(capPhoto == true){
+                pathsCapFiles.add(mCurrentPhotoPath);
+                capPhoto = false;
+            }
+            else if(gillPhoto == true){
+                pathsGillFiles.add(mCurrentPhotoPath);
+                gillPhoto = false;
+            }
+            else if(stemPhoto == true){
+                pathsStemFiles.add(mCurrentPhotoPath);
+                stemPhoto = false;
+            }
+            else if(veilRingPhoto == true){
+                pathsVeilRingFiles.add(mCurrentPhotoPath);
+                veilRingPhoto = false;
+            }
+            else if(otherPhoto == true){
+                pathsOtherFiles.add(mCurrentPhotoPath);
+                otherPhoto = false;
+            }
+            else {
+                Toast.makeText(TakePhotosActivity.this, ioException,
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
             Toast.makeText(TakePhotosActivity.this, "Photo ready to be uploaded",
                     Toast.LENGTH_LONG).show();
         }
-
     }
 
-    public static ArrayList<Bitmap> getBitmapsList(){
-        return bitmaps;
+    public boolean checkReadPermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission to read external storage")
+                        .setMessage("Please allow the app to read you external storage.")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(TakePhotosActivity.this,
+                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        99);
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+            else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        99);
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public boolean checkWritePermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission to write to external storage")
+                        .setMessage("Please allow the app write to you external storage.")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(TakePhotosActivity.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        99);
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+            else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        99);
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = String.valueOf(new Date().getTime());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public static HashMap<String, ArrayList<String>> getPaths(){
+        paths.put("cap", pathsCapFiles);
+        paths.put("gill", pathsGillFiles);
+        paths.put("stem", pathsStemFiles);
+        paths.put("veilRing", pathsVeilRingFiles);
+        paths.put("other", pathsOtherFiles);
+        return paths;
     }
 }

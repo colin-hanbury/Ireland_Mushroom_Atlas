@@ -1,7 +1,13 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Build;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -11,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
     private DatabaseReference mDatabase;
@@ -84,6 +91,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mMap != null) {
             setUpMap();
         }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                marker.getTag();
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(MapsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(MapsActivity.this);
+                }
+                builder.setTitle("View Observation")
+                        .setMessage("Would you like to view this mushroom observation?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent viewObservation = new Intent(MapsActivity.this, ViewObservationActivity.class);
+                                Bundle b = new Bundle();
+                                b.putString("id", (String) marker.getTag());
+                                viewObservation.putExtras(b);
+                                startActivity(viewObservation);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return false;
+            }
+        });
     }
 
     /**
@@ -94,45 +132,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
 
     private void setUpMap() {
-        final DatabaseReference ref = mDatabase.child("Mushroom Locations").getRef();
+
+        final DatabaseReference ref = mDatabase.child("mushroom_locations").getRef();
         // Attach a listener to read the data at our posts reference
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //long max = 0;
+                long max = 0;
                 //read from database
                 for (DataSnapshot locSnapshot : dataSnapshot.getChildren()) {
                     //get location from database
                     LocationData loc = (LocationData) locSnapshot.getValue(LocationData.class);
+                    String tag = locSnapshot.getKey().toString();
                     if (loc != null) {
                         //add marker to the map
                         mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(loc.getLatitude(), loc.getLongitude())));
-                                //give marker a title of the number of devices at that location
-                                //.title("No. Bluetooth Devices: "+loc.getNumBluetoothDevices()));
+                                .position(new LatLng(loc.getLatitude(), loc.getLongitude())))
+                        .setTag(tag);
+                        //give marker a title of the number of devices at that location
+                        //.title("No. Bluetooth Devices: "+loc.getNumBluetoothDevices()));
                         //get the most recent location coordinates
-                                /*
-                        long recordedTime  = Long.parseLong(locSnapshot.getKey());
+
+                        long recordedTime = Long.parseLong(locSnapshot.getKey());
                         if (recordedTime > max) {
                             max = recordedTime;
                             lastLocationLat = loc.latitude;
                             lastLocationLong = loc.longitude;
-                            */
+
                             //Log.i("MyTag", "onDataChange:" + lastLocationLat +
-                             //       ", "+ lastLocationLong);
+                            //       ", "+ lastLocationLong);
 
+                        }
                     }
-                }
-                //Log.i("MyTag", "camera:" + lastLocationLat +", "+ lastLocationLong);
-                //center the map on the most recent marker
+                    //Log.i("MyTag", "camera:" + lastLocationLat +", "+ lastLocationLong);
+                    //center the map on the most recent marker
 
-                CameraUpdate center =
-                        CameraUpdateFactory.newLatLng(new LatLng(0,0));
-            //lastLocationLat,lastLocationLong));
-                CameraUpdate zoom = CameraUpdateFactory.zoomTo(8);
-                mMap.moveCamera(center);
-                mMap.animateCamera(zoom);
-                ref.removeEventListener(this);
+                    CameraUpdate center =
+                            CameraUpdateFactory.newLatLng(new LatLng(lastLocationLat, lastLocationLong));
+                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(8);
+                    mMap.moveCamera(center);
+                    mMap.animateCamera(zoom);
+                    ref.removeEventListener(this);
+                }
             }
 
            @Override
@@ -140,5 +181,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        //marker.showInfoWindow();
+        /*Intent viewObservation = new Intent(MapsActivity.this, ViewObservationActivity.class);
+        startActivity(viewObservation);
+
+
+        */
     }
 }

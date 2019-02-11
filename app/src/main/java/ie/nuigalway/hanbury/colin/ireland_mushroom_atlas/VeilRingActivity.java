@@ -1,8 +1,10 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
+import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,11 +19,22 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
     private static ArrayList<String> attributesList;
     private static HashMap<String, String> attributesMap;
     private Button saveAndReturn;
+    private Dialog ringTypeTypeDialog;
+    private Button ringTypeClose;
+    private Button ringTypeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_veil_ring);
+
+        ringTypeButton = findViewById(R.id.ringTypesButton);
+        ringTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUpRingTypes();
+            }
+        });
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
@@ -36,7 +49,7 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
 
         Spinner veilType = findViewById(R.id.spinnerVeilType);
         Spinner veilColour = findViewById(R.id.spinnerVeilColour);
-        Spinner ringNumber = findViewById(R.id.spinnerRingNumber);
+        Spinner ringQuantity = findViewById(R.id.spinnerRingQuantity);
         Spinner ringType = findViewById(R.id.spinnerRingType);
 
         ArrayAdapter<String> veilTypeAdapter = new ArrayAdapter<String>(
@@ -55,13 +68,13 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
         veilColour.setAdapter(veilColourAdapter);
         veilColour.setOnItemSelectedListener(this);
 
-        ArrayAdapter<String> ringNumberAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> ringQuantityAdapter = new ArrayAdapter<String>(
                 VeilRingActivity.this,
                 android.R.layout.simple_expandable_list_item_1,
-                getResources().getStringArray(R.array.ringNumbers));
-        ringNumberAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ringNumber.setAdapter(ringNumberAdapter);
-        ringNumber.setOnItemSelectedListener(this);
+                getResources().getStringArray(R.array.ringQuantity));
+        ringQuantityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ringQuantity.setAdapter(ringQuantityAdapter);
+        ringQuantity.setOnItemSelectedListener(this);
 
         ArrayAdapter<String> ringTypeAdapter = new ArrayAdapter<String>(
                 VeilRingActivity.this,
@@ -70,6 +83,20 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
         ringTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ringType.setAdapter(ringTypeAdapter);
         ringType.setOnItemSelectedListener(this);
+    }
+
+    private void showPopUpRingTypes() {
+        ringTypeTypeDialog = new Dialog(VeilRingActivity.this);
+        ringTypeTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ringTypeTypeDialog.setContentView(R.layout.pop_up_ring_type);
+        ringTypeClose = ringTypeTypeDialog.findViewById(R.id.ringTypesCloseButton);
+        ringTypeClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringTypeTypeDialog.cancel();
+            }
+        });
+        ringTypeTypeDialog.show();
     }
 
     @Override
@@ -99,7 +126,6 @@ public class VeilRingActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     public static ArrayList<String> getAttributesList(){

@@ -25,6 +25,9 @@ public class LocationData {
         return longitude;
     }
 
+    public void setLatitude(double lat){ this.latitude = lat;}
+
+    public void setLongitude(double lon){ this.longitude = lon;}
     //public int getNumBluetoothDevices() { return numBluetoothDevices; }
 
     //setter

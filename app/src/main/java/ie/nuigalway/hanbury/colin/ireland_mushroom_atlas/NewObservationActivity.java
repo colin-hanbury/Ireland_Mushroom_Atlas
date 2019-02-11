@@ -2,12 +2,11 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.Manifest;
 import android.app.AlertDialog;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationListener;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,8 +18,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,12 +28,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class NewObservationActivity extends AppCompatActivity implements LocationListener {
+
+public class NewObservationActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
@@ -42,7 +43,14 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
     private HashMap<String, String> attributesMap;
     private StorageReference mStorage;
     private ArrayList<Bitmap> bitmaps;
-    private LocationData mushroomLocation;
+    private LatLng mushroomLocation;
+/*
+    private StorageReference capStorageRef;
+    private StorageReference gillStorageRef;
+    private StorageReference stemStorageRef;
+    private StorageReference veilRingStorageRef;
+    private StorageReference otherStorageRef;
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +61,13 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
         dbRef = database.getReference();
         myStorageRef = FirebaseStorage.getInstance();
         mStorage = myStorageRef.getReference();
+
         bitmaps = new ArrayList<>();
-        mushroomLocation = new LocationData(0,0);
+        attributesList = new ArrayList<>();
+        attributesMap = new HashMap<>();
+
+
+        getLocation();
 
         checkCameraPermission();
 
@@ -74,8 +87,7 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
 
         Button submit = findViewById(R.id.buttonSubmit);
 
-        attributesList = new ArrayList<>();
-        attributesMap = new HashMap<>();
+
 
         takePhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,122 +196,98 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
             public void onClick(View v) {
                 String time = String.valueOf(new Date().getTime());
 
-                if(CapFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: CapFeaturesActivity.getAttributesList()) {
+                if (CapFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : CapFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(GillFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: GillFeaturesActivity.getAttributesList()) {
+                if (GillFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : GillFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(StemFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: StemFeaturesActivity.getAttributesList()) {
+                if (StemFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : StemFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(VeilRingActivity.getAttributesList() != null) {
-                    for (String feature: VeilRingActivity.getAttributesList()) {
+                if (VeilRingActivity.getAttributesList() != null) {
+                    for (String feature : VeilRingActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
-                if(OtherFeaturesActivity.getAttributesList() != null) {
-                    for (String feature: OtherFeaturesActivity.getAttributesList()) {
+                if (OtherFeaturesActivity.getAttributesList() != null) {
+                    for (String feature : OtherFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
                     }
                 }
+                ///////////////////////////////////////////////////////////////////////
 
-
-                /*
-                HashMap<String, String> capMap = CapFeaturesActivity.getAttributesMap();
-                HashMap<String, String> stemMap = StemFeaturesActivity.getAttributesMap();
-                HashMap<String, String> gillMap = GillFeaturesActivity.getAttributesMap();
-                HashMap<String, String> veilRingMap = GillFeaturesActivity.getAttributesMap();
-                HashMap<String, String> othersMap = OtherFeaturesActivity.getAttributesMap();
-                */
-
-
-                if(CapFeaturesActivity.getAttributesMap()!= null) {
+                if (CapFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(CapFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(GillFeaturesActivity.getAttributesMap()!= null) {
+                if (GillFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(GillFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(StemFeaturesActivity.getAttributesMap()!= null) {
+                if (StemFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(StemFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(VeilRingActivity.getAttributesMap()!= null) {
+                if (VeilRingActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(VeilRingActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
-                if(OtherFeaturesActivity.getAttributesMap()!= null) {
+                if (OtherFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(OtherFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
                     attributesMap.putAll(tempMap);
                 }
 
-///////////////////
-                if(TakePhotosActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: TakePhotosActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                /*
-                if(CapFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: CapFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(GillFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: GillFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(StemFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: StemFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                if(OtherFeaturesActivity.getBitmapsList() != null) {
-                    for (Bitmap photo: OtherFeaturesActivity.getBitmapsList()) {
-                        bitmaps.add(photo);
-                    }
-                }
-                */
-
-                if(attributesList.isEmpty() && bitmaps.isEmpty()){
-                    Toast.makeText(NewObservationActivity.this,"No data entered",
+                if (attributesList.isEmpty() && bitmaps.isEmpty()) {
+                    Toast.makeText(NewObservationActivity.this, "No data entered",
                             Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
 
                     for (int i = 0; i < attributesList.size(); i++) {
                         String tag = attributesList.get(i);
-                        String type = "Other";
-                        if(tag.contains("Cap")){
-                            type = "Cap";
+                        String type = "";
+                        if (tag != null) {
+                            if (tag.contains("Cap")) {
+                                type = "cap";
+                            } else if (tag.contains("Gill")) {
+                                type = "gill";
+                            } else if (tag.contains("Stem")) {
+                                type = "stem";
+                            } else if (tag.contains("Veil") || tag.contains("Ring")) {
+                                type = "veil_ring";
+                            } else {
+                                type = "other";
+                            }
                         }
-                        else if(tag.contains("Gill")){
-                            type = "Gill";
-                        }
-                        else if(tag.contains("Stalk")){
-                            type = "Stem";
-                        }
-                        dbRef.child("Mushroom Attributes:").child(time).child(type).child(tag).
+                        dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
-                    dbRef.child("Mushroom Locations").child(time).setValue(mushroomLocation);
+                    getLocation();
+                    dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
                     uploadPhotos(time);
-                    Toast.makeText(NewObservationActivity.this,"Observation submitted",
-                            Toast.LENGTH_SHORT).show();
+                    if (mushroomLocation == null){
+                        Toast.makeText(NewObservationActivity.this,
+                                "Location Not Submitted with Observation",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+
+                        Toast.makeText(NewObservationActivity.this,
+                                "Location Submitted with Observation",
+                                Toast.LENGTH_SHORT).show();
+
+                    }
                     attributesList.clear();
                     attributesMap.clear();
                     bitmaps.clear();
@@ -307,6 +295,180 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
                 }
             }
         });
+    }
+
+    private void uploadPhotos(final String time){
+        if (!TakePhotosActivity.getPaths().isEmpty()) {
+            if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
+                for (String path : TakePhotosActivity.getPaths().get("cap")) {
+                    String pathName = path;
+                    File photo = new File(path);
+                    String capTime = String.valueOf(new Date().getTime());
+                    final StorageReference capStorageRef = mStorage.child("mushroom_photos").child(time).child("cap").child(capTime);
+                    Task uploadTask = capStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return capStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String capURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("cap").child(currTime)
+                                        .setValue(capURL);
+                            }
+                        }
+                    });
+                }
+            }
+            if (!TakePhotosActivity.getPaths().get("gill").isEmpty()){
+                for (String path : TakePhotosActivity.getPaths().get("gill")) {
+                    File photo = new File(path);
+                    String gillTime = String.valueOf(new Date().getTime());
+                    final StorageReference gillStorageRef = mStorage.child("mushroom_photos").child(time).child("gill").child(gillTime);
+                    Task uploadTask = gillStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return gillStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String gillURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("gill").child(currTime)
+                                        .setValue(gillURL);
+                            }
+                        }
+                    });
+                }
+            }
+            if (!TakePhotosActivity.getPaths().get("stem").isEmpty()) {
+                for (String path : TakePhotosActivity.getPaths().get("stem")) {
+                    File photo = new File(path);
+                    String stemTime = String.valueOf(new Date().getTime());
+                    final StorageReference stemStorageRef = mStorage.child("mushroom_photos").child(time).child("stem").child(stemTime);
+                    Task uploadTask = stemStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return stemStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String stemURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("stem").child(currTime)
+                                        .setValue(stemURL);
+                            }
+                        }
+                    });
+
+                }
+            }
+            if (!TakePhotosActivity.getPaths().get("veilRing").isEmpty()) {
+                for (String path : TakePhotosActivity.getPaths().get("veilRing")) {
+                    File photo = new File(path);
+                    String veilRingTime = String.valueOf(new Date().getTime());
+                    final StorageReference veilRingStorageRef = mStorage.child("mushroom_photos").child(time).child("veilRing").child(veilRingTime);
+                    Task uploadTask = veilRingStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return veilRingStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String veilRingURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("veilRing").child(currTime)
+                                        .setValue(veilRingURL);
+                            }
+                        }
+                    });
+
+                }
+            }
+            if (!TakePhotosActivity.getPaths().get("other").isEmpty()) {
+                int i = 0;
+                for (String path : TakePhotosActivity.getPaths().get("other")) {
+                    File photo = new File(path);
+                    String otherTime = String.valueOf(new Date().getTime());
+                    final StorageReference otherStorageRef = mStorage.child("mushroom_photos").child(time).child("other").child(otherTime);
+                    Task uploadTask = otherStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return otherStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String otherURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("other").child(currTime)
+                                        .setValue(otherURL);
+                            }
+                        }
+                    });
+
+                }
+            }
+        }
+    }
+
+    private void getLocation() {
+
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, "Permission to access GPS denied",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        SingleShotLocationProvider.requestSingleUpdate(this,
+                new SingleShotLocationProvider.LocationCallback() {
+                    @Override
+                    public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
+                        mushroomLocation = new LatLng(location.latitude, location.longitude);
+
+                    }
+                });
     }
 
     public boolean checkCameraPermission(){
@@ -328,7 +490,8 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(NewObservationActivity.this,
+                                ActivityCompat.requestPermissions(
+                                        NewObservationActivity.this,
                                         new String[]{Manifest.permission.CAMERA},
                                         99);
                             }
@@ -347,48 +510,5 @@ public class NewObservationActivity extends AppCompatActivity implements Locatio
         else {
             return true;
         }
-    }
-
-    private void uploadPhotos(String time){
-        if(!bitmaps.isEmpty()) {
-            for (Bitmap bmap : bitmaps) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] b = stream.toByteArray();
-                String newTime = String.valueOf(new Date().getTime());
-                mStorage.child("Images").child(time).child(newTime).putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(NewObservationActivity.this, "Photo upload failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            Toast.makeText(NewObservationActivity.this, "Photo(s) uploaded", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mushroomLocation = new LocationData(location.getLatitude(), location.getLongitude());
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 }

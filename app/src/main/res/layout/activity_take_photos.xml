@@ -22,45 +22,43 @@ tools:context=".TakePhotosActivity">
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginTop="20dp"
-            android:text="Add Cap Photo(s)"
+            android:text="Take Cap Photo"
             android:textAlignment="center"/>
 
         <Button
             android:id="@+id/buttonAddGillPhotos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Add Gill Photo(s)"
+            android:text="Take Gill Photo"
             android:textAlignment="center"/>
-
-
 
         <Button
             android:id="@+id/buttonAddStemPhotos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Take Stem Photo(s)"
+            android:text="Take Stem Photo"
             android:textAlignment="center"/>
 
         <Button
             android:id="@+id/buttonAddVeilRingPhotos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Take Veil / Ring Photo(s)"
+            android:text="Take Veil or Ring Photo"
             android:textAlignment="center"/>
 
         <Button
             android:id="@+id/buttonAddOtherPhotos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Take Other Features Photo(s)"
+            android:text="Take Other Feature Type Photo"
             android:textAlignment="center"/>
 
         <Button
