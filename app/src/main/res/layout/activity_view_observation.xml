@@ -27,7 +27,7 @@ tools:context=".ViewObservationActivity">
         android:orientation="vertical" >
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/recyclerViewCap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -73,6 +73,11 @@ tools:context=".ViewObservationActivity">
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="10dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewGill"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <TextView android:id="@+id/textViewObserveGillAttachment"
             android:layout_width="wrap_content"
@@ -120,19 +125,17 @@ tools:context=".ViewObservationActivity">
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1" >
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="10dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewStem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <TextView android:id="@+id/textViewObserveStalkShape"
             android:layout_width="wrap_content"
@@ -185,6 +188,11 @@ tools:context=".ViewObservationActivity">
         android:orientation="vertical"
         android:layout_marginTop="10dp">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewVeilRing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <TextView android:id="@+id/textViewObserveVeilType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -230,20 +238,17 @@ tools:context=".ViewObservationActivity">
             android:text=""/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp">
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginBottom="10dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewOther"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <TextView android:id="@+id/textViewObserveBruises"
             android:layout_width="wrap_content"

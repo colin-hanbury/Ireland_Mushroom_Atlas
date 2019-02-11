@@ -32,12 +32,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         if(urls.get(i) == null){
             Toast.makeText(context, "No url", Toast.LENGTH_LONG).show();
         }
+
         Picasso.get()
                 .load(urls.get(i))
-                .placeholder(R.drawable.cap_shapes)
                 .fit()
-                .centerCrop()
                 .into(imageViewHolder.imageView);
+
     }
 
     @Override
@@ -50,7 +50,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         public ImageViewHolder(View itemView){
             super(itemView);
-            this.imageView = itemView.findViewById(R.id.capImageView);
+                this.imageView = itemView.findViewById(R.id.imageView);
+
         }
     }
 }

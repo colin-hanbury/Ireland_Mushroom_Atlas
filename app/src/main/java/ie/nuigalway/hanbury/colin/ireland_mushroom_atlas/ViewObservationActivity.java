@@ -1,23 +1,19 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -34,35 +30,51 @@ public class ViewObservationActivity extends AppCompatActivity{
     private DatabaseReference dbRefStem;
     private DatabaseReference dbRefVeilRing;
     private DatabaseReference dbRefOther;
-
-    private StorageReference storage;
-
-    private StorageReference sRefCap;
-    private ArrayList<Bitmap> capImages;
-    private StorageReference sRefGill;
-    private StorageReference sRefStem;
-    private StorageReference sRefVeilRing;
-    private StorageReference sRefOther;
-    private GridView gridViewCap;
-    private DatabaseReference dbRefCapPhoto;
     private String observationID;
     private String imageID;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewCap;
+    private RecyclerView recyclerViewGill;
+    private RecyclerView recyclerViewStem;
+    private RecyclerView recyclerViewVeilRing;
+    private RecyclerView recyclerViewOther;
     private ImageAdapter imageAdapter;
-    private ArrayList<String> urls;
+    private ArrayList<String> capURLs;
+    private ArrayList<String> gillURLs;
+    private ArrayList<String> stemURLs;
+    private ArrayList<String> veilRingURLs;
+    private ArrayList<String> otherURLs;
+    private DatabaseReference dbRefCapPhoto;
+    private DatabaseReference dbRefGillPhoto;
+    private DatabaseReference dbRefStemPhoto;
+    private DatabaseReference dbRefVeilRingPhoto;
+    private DatabaseReference dbRefOtherPhoto;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_observation);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewCap = findViewById(R.id.recyclerViewCap);
+        recyclerViewCap.setHasFixedSize(true);
+        recyclerViewCap.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewGill = findViewById(R.id.recyclerViewGill);
+        recyclerViewGill.setHasFixedSize(true);
+        recyclerViewGill.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewStem = findViewById(R.id.recyclerViewStem);
+        recyclerViewStem.setHasFixedSize(true);
+        recyclerViewStem.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewVeilRing = findViewById(R.id.recyclerViewVeilRing);
+        recyclerViewVeilRing.setHasFixedSize(true);
+        recyclerViewVeilRing.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewOther = findViewById(R.id.recyclerViewOther);
+        recyclerViewOther.setHasFixedSize(true);
+        recyclerViewOther.setLayoutManager(new LinearLayoutManager(this));
 
-        final long ONE_MEGABYTE = 1024 * 1024;
-
-        capImages = new ArrayList<>();
-        urls = new ArrayList<>();
+        capURLs = new ArrayList<>();
+        gillURLs = new ArrayList<>();
+        stemURLs = new ArrayList<>();
+        veilRingURLs = new ArrayList<>();
+        otherURLs = new ArrayList<>();
 
         final TextView capColour = (TextView) findViewById(R.id.textViewObserveCapColourVal);
         final TextView capShape = (TextView) findViewById(R.id.textViewObserveCapShapeVal);
@@ -91,41 +103,87 @@ public class ViewObservationActivity extends AppCompatActivity{
         Bundle bundle = getIntent().getExtras();
         observationID = bundle.getString("id");
 
-        storage = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference();
-        //+imageID+".jpeg"
-        //String imageTag = getCapTimes().get(observationID);
+
         dbRefCapPhoto = database.child("mushroom_photos").child(observationID).child("cap").getRef();
+        dbRefGillPhoto = database.child("mushroom_photos").child(observationID).child("gill").getRef();
+        dbRefStemPhoto = database.child("mushroom_photos").child(observationID).child("stem").getRef();
+        dbRefVeilRingPhoto = database.child("mushroom_photos").child(observationID).child("veilRing").getRef();
+        dbRefOtherPhoto = database.child("mushroom_photos").child(observationID).child("other").getRef();
 
         dbRefCapPhoto.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                    imageID = capSnapshot.getValue(String.class);
-                   urls.add(imageID);
-                   /*
-                   sRefCap = storage.child("mushroom_photos/" + observationID + "/cap/" + imageID);
-                   sRefCap.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                       @Override
-                       public void onSuccess(byte[] bytes) {
-                           Bitmap capImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                           capImages.add(capImage);
-                       }
-                   }).addOnFailureListener(new OnFailureListener() {
-                       @Override
-                       public void onFailure(@NonNull Exception exception) {
-                           Toast.makeText(ViewObservationActivity.this,
-                                   "Failed to load Image: " + imageID, Toast.LENGTH_LONG).show();
-                       }
-                   });
-                   */
+                   capURLs.add(imageID);
                }
-               imageAdapter = new ImageAdapter(ViewObservationActivity.this, urls);
-               recyclerView.setAdapter(imageAdapter);
+               imageAdapter = new ImageAdapter(ViewObservationActivity.this, capURLs);
+               recyclerViewCap.setAdapter(imageAdapter);
            }
 
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        dbRefGillPhoto.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
+                    imageID = capSnapshot.getValue(String.class);
+                    gillURLs.add(imageID);
+                }
+                imageAdapter = new ImageAdapter(ViewObservationActivity.this, gillURLs);
+                recyclerViewGill.setAdapter(imageAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        dbRefStemPhoto.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
+                    imageID = capSnapshot.getValue(String.class);
+                    stemURLs.add(imageID);
+                }
+                imageAdapter = new ImageAdapter(ViewObservationActivity.this, stemURLs);
+                recyclerViewStem.setAdapter(imageAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        dbRefVeilRingPhoto.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
+                    imageID = capSnapshot.getValue(String.class);
+                    veilRingURLs.add(imageID);
+                }
+                imageAdapter = new ImageAdapter(ViewObservationActivity.this, veilRingURLs);
+                recyclerViewVeilRing.setAdapter(imageAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        dbRefOtherPhoto.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
+                    imageID = capSnapshot.getValue(String.class);
+                    otherURLs.add(imageID);
+                }
+                imageAdapter = new ImageAdapter(ViewObservationActivity.this, otherURLs);
+                recyclerViewOther.setAdapter(imageAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
 
