@@ -32,7 +32,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent MapsActivity = new Intent(MenuActivity.this,
-                        ie.nuigalway.hanbury.colin.ireland_mushroom_atlas.MapsActivity.class);
+                        MapsActivity.class);
                 startActivity(MapsActivity);
             }
         });
