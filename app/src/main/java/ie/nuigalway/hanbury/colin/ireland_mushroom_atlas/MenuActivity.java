@@ -9,24 +9,31 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class MenuActivity extends AppCompatActivity {
 
+    private FirebaseAuth auth;
     private ImageButton mapButton;
     private ImageButton observationButton;
+    private Button signOutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         checkLocationPermission();
-        FirebaseApp.initializeApp(this);
+
+        auth = FirebaseAuth.getInstance();
         mapButton = findViewById(R.id.imageButtonMushroomMap);
         observationButton = findViewById(R.id.imageButtonMakeObservation);
+        signOutButton = findViewById(R.id.sign_out_button);
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +49,14 @@ public class MenuActivity extends AppCompatActivity {
                 Intent NewObservation = new Intent(MenuActivity.this,
                         NewObservationActivity.class);
                 startActivity(NewObservation);
+            }
+        });
+
+        signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth.signOut();
+                finish();
             }
         });
     }

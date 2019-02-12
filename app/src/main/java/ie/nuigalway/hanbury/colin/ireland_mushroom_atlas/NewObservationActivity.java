@@ -411,7 +411,6 @@ public class NewObservationActivity extends AppCompatActivity {
                             }
                         }
                     });
-
                 }
             }
             if (!TakePhotosActivity.getPaths().get("other").isEmpty()) {
