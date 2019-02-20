@@ -224,7 +224,7 @@ public class ViewObservationActivity extends AppCompatActivity{
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String gill = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (gill != null) {
+                    if (gill == null) {
 
                         if (key.contains("Gill_Attachment")) {
                             gillAttachment.setText(gill);
