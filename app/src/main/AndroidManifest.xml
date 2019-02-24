@@ -34,13 +34,9 @@
 
         <activity android:name=".LoginActivity">
 
-            <!--
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            -->
+
+
         </activity>
         <activity android:name=".ViewObservationActivity" />
         <!--
@@ -58,7 +54,12 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".MenuActivity" />
+        <activity android:name=".MenuActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NewObservationActivity" />
         <activity android:name=".CapFeaturesActivity" />
         <activity android:name=".GillFeaturesActivity" />
