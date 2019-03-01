@@ -179,4 +179,5 @@
     <string name="title_activity_new_observation">New Observation</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_classifier">ClassifierActivity</string>
+    <string name="help_message">Press the button to take a photo</string>
 </resources>

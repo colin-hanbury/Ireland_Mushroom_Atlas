@@ -50,7 +50,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent ClassifyActivity = new Intent(MenuActivity.this,
-                        ClassifyActivity.class);
+                        ImageClassifierActivity.class);
                 startActivity(ClassifyActivity);
             }
         });

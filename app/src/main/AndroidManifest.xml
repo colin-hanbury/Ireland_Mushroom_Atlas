@@ -26,7 +26,6 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ClassifyActivity"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -60,6 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ImageClassifierActivity" />
         <activity android:name=".NewObservationActivity" />
         <activity android:name=".CapFeaturesActivity" />
         <activity android:name=".GillFeaturesActivity" />
