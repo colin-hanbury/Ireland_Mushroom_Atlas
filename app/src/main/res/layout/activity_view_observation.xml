@@ -42,7 +42,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveCapColourVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveCapShape"
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveCapShapeVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveCapSurface"
             android:layout_width="wrap_content"
@@ -64,7 +64,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveCapSurfaceVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
     </LinearLayout>
 
@@ -88,7 +88,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveGillAttachmentVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveGillSpacing"
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveGillSpacingVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveGillSize"
             android:layout_width="wrap_content"
@@ -110,7 +110,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveGillSizeVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveGillColour"
             android:layout_width="wrap_content"
@@ -121,7 +121,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveGillColourVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
     </LinearLayout>
 
@@ -146,7 +146,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveStalkShapeVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveStalkRoot"
             android:layout_width="wrap_content"
@@ -157,7 +157,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveStalkRootVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveStalkSurface"
             android:layout_width="wrap_content"
@@ -168,7 +168,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveStalkSurfaceVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveStalkColour"
             android:layout_width="wrap_content"
@@ -179,7 +179,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveStalkColourVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
     </LinearLayout>
 
     <LinearLayout
@@ -202,7 +202,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveVeilTypeVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveVeilColour"
             android:layout_width="wrap_content"
@@ -213,7 +213,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveVeilColourVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveRingQuantity"
             android:layout_width="wrap_content"
@@ -224,7 +224,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveRingQuantityVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveRingType"
             android:layout_width="wrap_content"
@@ -235,7 +235,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveRingTypeVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
     </LinearLayout>
 
 
@@ -259,7 +259,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveBruisesVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveOdor"
             android:layout_width="wrap_content"
@@ -270,7 +270,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveOdorVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObservePopulation"
             android:layout_width="wrap_content"
@@ -281,7 +281,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObservePopulationVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""/>
+            android:text="N/A"/>
 
         <TextView android:id="@+id/textViewObserveHabitat"
             android:layout_width="wrap_content"
@@ -292,7 +292,7 @@ tools:context=".ViewObservationActivity">
             android:id="@+id/textViewObserveHabitatVal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""
+            android:text="N/A"
             android:layout_marginBottom="10dp"/>
     </LinearLayout>
 </LinearLayout>

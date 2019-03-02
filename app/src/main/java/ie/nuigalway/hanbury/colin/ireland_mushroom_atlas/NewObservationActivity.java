@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+// c.hanbury1@nuigalway.ie
+// ilikemushrooms123
 
 public class NewObservationActivity extends AppCompatActivity {
 
@@ -42,15 +44,8 @@ public class NewObservationActivity extends AppCompatActivity {
     private ArrayList<String> attributesList;
     private HashMap<String, String> attributesMap;
     private StorageReference mStorage;
-    private ArrayList<Bitmap> bitmaps;
     private LatLng mushroomLocation;
-/*
-    private StorageReference capStorageRef;
-    private StorageReference gillStorageRef;
-    private StorageReference stemStorageRef;
-    private StorageReference veilRingStorageRef;
-    private StorageReference otherStorageRef;
-*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +57,13 @@ public class NewObservationActivity extends AppCompatActivity {
         myStorageRef = FirebaseStorage.getInstance();
         mStorage = myStorageRef.getReference();
 
-        bitmaps = new ArrayList<>();
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
 
 
         getLocation();
 
-        checkCameraPermission();
+
 
         Button takePhotosButton = findViewById(R.id.buttonTakePhotos);
         ImageButton takePhotosImageButton = findViewById(R.id.imageButtonTakePhotos);
@@ -249,10 +243,11 @@ public class NewObservationActivity extends AppCompatActivity {
                     attributesMap.putAll(tempMap);
                 }
 
-                if (attributesList.isEmpty() && bitmaps.isEmpty()) {
+                if (attributesList.isEmpty()) {
                     Toast.makeText(NewObservationActivity.this, "No data entered",
                             Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else {
 
                     for (int i = 0; i < attributesList.size(); i++) {
                         String tag = attributesList.get(i);
@@ -273,26 +268,21 @@ public class NewObservationActivity extends AppCompatActivity {
                         dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
-                    getLocation();
-                    dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
-                    uploadPhotos(time);
-                    if (mushroomLocation == null){
-                        Toast.makeText(NewObservationActivity.this,
-                                "Location Not Submitted with Observation",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-
-                        Toast.makeText(NewObservationActivity.this,
-                                "Location Submitted with Observation",
-                                Toast.LENGTH_SHORT).show();
-
-                    }
-                    attributesList.clear();
-                    attributesMap.clear();
-                    bitmaps.clear();
-                    finish();
+                    Toast.makeText(NewObservationActivity.this,
+                            "Characteristics Submitted",
+                            Toast.LENGTH_SHORT).show();
                 }
+                getLocation();
+                dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
+                uploadPhotos(time);
+                if (mushroomLocation != null){
+                    Toast.makeText(NewObservationActivity.this,
+                            "Location Submitted",
+                            Toast.LENGTH_SHORT).show();
+                }
+                attributesList.clear();
+                attributesMap.clear();
+                finish();
             }
         });
     }
@@ -411,7 +401,6 @@ public class NewObservationActivity extends AppCompatActivity {
                             }
                         }
                     });
-
                 }
             }
             if (!TakePhotosActivity.getPaths().get("other").isEmpty()) {
@@ -444,6 +433,9 @@ public class NewObservationActivity extends AppCompatActivity {
 
                 }
             }
+            Toast.makeText(NewObservationActivity.this,
+                    "Characteristics Submitted",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -471,44 +463,5 @@ public class NewObservationActivity extends AppCompatActivity {
                 });
     }
 
-    public boolean checkCameraPermission(){
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.CAMERA)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(this)
-                        .setTitle("Permission to access camera")
-                        .setMessage("Please allow the app to access you camera.")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(
-                                        NewObservationActivity.this,
-                                        new String[]{Manifest.permission.CAMERA},
-                                        99);
-                            }
-                        })
-                        .create()
-                        .show();
-            }
-            else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA},
-                        99);
-            }
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
 }

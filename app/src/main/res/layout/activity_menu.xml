@@ -8,6 +8,13 @@
     android:background="@color/colourGrey"
     tools:context=".MenuActivity">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sign_out_button"
+        android:layout_gravity="right"
+        android:text="Sign Out"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,6 +36,28 @@
         android:layout_marginTop="5dp"
         android:layout_gravity="center"/>
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Classify a Mushroom"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/border_colour"
+        android:layout_gravity="center"/>
+
+    <ImageButton
+        android:id="@+id/imageButtonClassifyMushroom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mushroom_classify"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
