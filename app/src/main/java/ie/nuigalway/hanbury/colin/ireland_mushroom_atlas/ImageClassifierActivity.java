@@ -61,8 +61,8 @@ public class ImageClassifierActivity extends AppCompatActivity {
     private static final String MODEL_FILE = "file:///android_asset/retrained_graph.pb";
     private static final String LABEL_FILE = "file:///android_asset/retrained_labels.txt";
     private static final int INPUT_SIZE = 224;
-    private static final int IMAGE_MEAN = 112;
-    private static final float IMAGE_STD = 1;
+    private static final int IMAGE_MEAN = 128;
+    private static final float IMAGE_STD = 128.0f;
     private static final String INPUT_NAME = "input";
     private static final String OUTPUT_NAME = "final_result";
     private static final String TAG = "ImageClassifierActivity";
@@ -90,23 +90,32 @@ public class ImageClassifierActivity extends AppCompatActivity {
             Log.d(TAG, "Closed camera, releasing");
         }
     };
+    private boolean previewMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         context = ImageClassifierActivity.this;
         setContentView(R.layout.activity_camera);
-        resultText = findViewById(R.id.resultText);
         textureView = findViewById(R.id.textureView);
         textureView.setSurfaceTextureListener(textureListener);
+        previewMode = true;
         captureButton = findViewById(R.id.buttonCapture);
+        resultText = findViewById(R.id.resultText);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
+                if(previewMode) {
+                    takePicture();
+                }
+                else {
+                    createCameraPreview();
+                    captureButton.setText("Capture");
+                    resultText.setText("");
+                }
             }
         });
+
     }
 
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
@@ -197,7 +206,7 @@ public class ImageClassifierActivity extends AppCompatActivity {
         }
     };
 
-    public void initializeCamera() {
+    private void initializeCamera() {
         if (initialized) {
             throw new IllegalStateException(
                     "CameraHandler is already initialized or is initializing");
@@ -208,7 +217,6 @@ public class ImageClassifierActivity extends AppCompatActivity {
         CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         try{
             String camId = getCameraId(context);
-
             // Initialize the image processor with the largest available size.
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(camId);
             StreamConfigurationMap map = characteristics.get(
@@ -266,15 +274,18 @@ public class ImageClassifierActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        previewMode = true;
     }
 
     private void updatePreview() {
         if(cameraDevice == null) {
-            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
+            Log.d(TAG, "Camera device null @ updatePreview()");
         }
+        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
         try{
             captureSession.setRepeatingRequest(captureRequestBuilder.build(),null,
                     backgroundHandler);
+            Log.d(TAG, "Update preview success");
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -296,13 +307,6 @@ public class ImageClassifierActivity extends AppCompatActivity {
                         bitmap = mImagePreprocessor.preprocessImage(image);
                     }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //mImage.setImageBitmap(bitmap);
-                        }
-                    });
-
                     final List<Classifier.Recognition> results = mTensorFlowClassifier
                             .recognizeImage(bitmap);
                     Log.d(TAG, "Got the following results from Tensorflow: " + results);
@@ -323,6 +327,7 @@ public class ImageClassifierActivity extends AppCompatActivity {
                                     sb.append("\n");
                                 }
                                 resultText.setText(sb.toString());
+                                captureButton.setText("New Capture");
                             }
                         }
                     });
@@ -386,9 +391,8 @@ public class ImageClassifierActivity extends AppCompatActivity {
         } catch (CameraAccessException cae) {
             Log.e(TAG, "Cannot create camera capture session", cae);
         }
-
+        previewMode = false;
     }
-
 
     public Size getImageDimensions() {
         return imageDimensions;
@@ -440,8 +444,6 @@ public class ImageClassifierActivity extends AppCompatActivity {
             Log.e(TAG, "Camera access exception getting characteristics.");
         }
     }
-
-
 
     static Size getBestCameraSize(Size[] availableCameraResolutions, Size minSize) {
         // This should select the closest size that is not too small
