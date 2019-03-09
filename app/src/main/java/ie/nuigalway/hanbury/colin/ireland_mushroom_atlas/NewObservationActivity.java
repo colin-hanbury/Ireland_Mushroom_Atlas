@@ -82,7 +82,6 @@ public class NewObservationActivity extends AppCompatActivity {
         Button submit = findViewById(R.id.buttonSubmit);
 
 
-
         takePhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +256,7 @@ public class NewObservationActivity extends AppCompatActivity {
                                 type = "cap";
                             } else if (tag.contains("Gill")) {
                                 type = "gill";
+
                             } else if (tag.contains("Stem")) {
                                 type = "stem";
                             } else if (tag.contains("Veil") || tag.contains("Ring")) {
@@ -268,9 +268,6 @@ public class NewObservationActivity extends AppCompatActivity {
                         dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
-                    Toast.makeText(NewObservationActivity.this,
-                            "Characteristics Submitted",
-                            Toast.LENGTH_SHORT).show();
                 }
                 getLocation();
                 dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
@@ -433,9 +430,9 @@ public class NewObservationActivity extends AppCompatActivity {
 
                 }
             }
-            Toast.makeText(NewObservationActivity.this,
-                    "Characteristics Submitted",
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText(NewObservationActivity.this,
+              //      "Characteristics Submitted",
+                //    Toast.LENGTH_SHORT).show();
         }
     }
 

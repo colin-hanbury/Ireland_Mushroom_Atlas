@@ -23,16 +23,16 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Size;
-import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,7 +45,10 @@ public class ImageClassifierActivity extends AppCompatActivity {
     private HandlerThread backgroundThread;
     private Handler backgroundHandler;
     private Button captureButton;
-    private TextView resultText;
+    private boolean previewMode;
+    private ClassifierResultAdapter resultAdapter;
+    private RecyclerView recyclerViewClassify;
+    private ArrayList<String> values;
     private static final int MAX_IMAGES = 1;
     private CameraDevice cameraDevice;
     private CameraCaptureSession captureSession;
@@ -90,18 +93,20 @@ public class ImageClassifierActivity extends AppCompatActivity {
             Log.d(TAG, "Closed camera, releasing");
         }
     };
-    private boolean previewMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = ImageClassifierActivity.this;
         setContentView(R.layout.activity_camera);
+        recyclerViewClassify = findViewById(R.id.recyclerViewClassify);
+        recyclerViewClassify.setHasFixedSize(true);
+        recyclerViewClassify.setLayoutManager(new LinearLayoutManager(this));
         textureView = findViewById(R.id.textureView);
         textureView.setSurfaceTextureListener(textureListener);
         previewMode = true;
+        values = new ArrayList<>();
         captureButton = findViewById(R.id.buttonCapture);
-        resultText = findViewById(R.id.resultText);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +116,9 @@ public class ImageClassifierActivity extends AppCompatActivity {
                 else {
                     createCameraPreview();
                     captureButton.setText("Capture");
-                    resultText.setText("");
+                    values.clear();
+                    resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this, values);
+                    recyclerViewClassify.setAdapter(resultAdapter);
                 }
             }
         });
@@ -208,8 +215,11 @@ public class ImageClassifierActivity extends AppCompatActivity {
 
     private void initializeCamera() {
         if (initialized) {
-            throw new IllegalStateException(
-                    "CameraHandler is already initialized or is initializing");
+            createCameraPreview();
+            captureButton.setText("Capture");
+            values.clear();
+            resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this, values);
+            recyclerViewClassify.setAdapter(resultAdapter);
         }
         initialized = true;
 
@@ -315,20 +325,21 @@ public class ImageClassifierActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (results == null || results.isEmpty()) {
-                                resultText.setText("I don't understand what I see");
-                            } else {
-                                StringBuilder sb = new StringBuilder();
+                                values.add("I don't understand what I see");
+                            }
+                            else {
                                 Iterator<Classifier.Recognition> it = results.iterator();
                                 while (it.hasNext()) {
                                     Classifier.Recognition r = it.next();
-                                    sb.append(r.getTitle());
-                                    sb.append(": ");
-                                    sb.append(r.getConfidence());
-                                    sb.append("\n");
+                                    String result = r.getTitle();
+                                    result = result.concat(": ");
+                                    result = result.concat(r.getConfidence().toString());
+                                    values.add(result);
                                 }
-                                resultText.setText(sb.toString());
-                                captureButton.setText("New Capture");
                             }
+                            resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this, values);
+                            recyclerViewClassify.setAdapter(resultAdapter);
+                            captureButton.setText("New Capture");
                         }
                     });
                 }

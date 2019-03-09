@@ -10,17 +10,13 @@
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/resultText" />
+        android:layout_above="@+id/recyclerViewClassify" />
 
-    <TextView
-        android:id="@+id/resultText"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewClassify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20sp"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="@string/help_message"
-        android:layout_above="@id/buttonCapture" />
+        android:layout_above="@id/buttonCapture"/>
 
     <Button
         android:id="@+id/buttonCapture"

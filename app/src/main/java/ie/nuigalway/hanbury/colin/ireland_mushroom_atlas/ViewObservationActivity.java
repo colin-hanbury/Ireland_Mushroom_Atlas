@@ -1,22 +1,16 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.GridView;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -24,30 +18,40 @@ import java.util.ArrayList;
 public class ViewObservationActivity extends AppCompatActivity{
 
     private DatabaseReference database;
-
     private DatabaseReference dbRefCap;
     private DatabaseReference dbRefGill;
     private DatabaseReference dbRefStem;
     private DatabaseReference dbRefVeilRing;
     private DatabaseReference dbRefOther;
+
     private String observationID;
     private String imageID;
+
     private RecyclerView recyclerViewCap;
     private RecyclerView recyclerViewGill;
     private RecyclerView recyclerViewStem;
     private RecyclerView recyclerViewVeilRing;
     private RecyclerView recyclerViewOther;
+    private RecyclerView recyclerViewCapText;
+    private RecyclerView recyclerViewGillText;
+    private RecyclerView recyclerViewStemText;
+    private RecyclerView recyclerViewVeilRingText;
+    private RecyclerView recyclerViewOtherText;
     private ImageAdapter imageAdapter;
+    private TextAdapter textAdapter;
+
     private ArrayList<String> capURLs;
     private ArrayList<String> gillURLs;
     private ArrayList<String> stemURLs;
     private ArrayList<String> veilRingURLs;
     private ArrayList<String> otherURLs;
+
     private DatabaseReference dbRefCapPhoto;
     private DatabaseReference dbRefGillPhoto;
     private DatabaseReference dbRefStemPhoto;
     private DatabaseReference dbRefVeilRingPhoto;
     private DatabaseReference dbRefOtherPhoto;
+
 
 
     @Override
@@ -60,6 +64,23 @@ public class ViewObservationActivity extends AppCompatActivity{
         recyclerViewGill = findViewById(R.id.recyclerViewGill);
         recyclerViewGill.setHasFixedSize(true);
         recyclerViewGill.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewCapText = findViewById(R.id.recyclerViewCapText);
+        recyclerViewCapText.setHasFixedSize(true);
+        recyclerViewCapText.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewGillText = findViewById(R.id.recyclerViewGillText);
+        recyclerViewGillText.setHasFixedSize(true);
+        recyclerViewGillText.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewStemText = findViewById(R.id.recyclerViewStemText);
+        recyclerViewStemText.setHasFixedSize(true);
+        recyclerViewStemText.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewVeilRingText = findViewById(R.id.recyclerViewVeilRingText);
+        recyclerViewVeilRingText.setHasFixedSize(true);
+        recyclerViewVeilRingText.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewOtherText = findViewById(R.id.recyclerViewOtherText);
+        recyclerViewOtherText.setHasFixedSize(true);
+        recyclerViewOtherText.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewGillText.setHasFixedSize(true);
+        recyclerViewGillText.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewStem = findViewById(R.id.recyclerViewStem);
         recyclerViewStem.setHasFixedSize(true);
         recyclerViewStem.setLayoutManager(new LinearLayoutManager(this));
@@ -69,36 +90,11 @@ public class ViewObservationActivity extends AppCompatActivity{
         recyclerViewOther = findViewById(R.id.recyclerViewOther);
         recyclerViewOther.setHasFixedSize(true);
         recyclerViewOther.setLayoutManager(new LinearLayoutManager(this));
-
         capURLs = new ArrayList<>();
         gillURLs = new ArrayList<>();
         stemURLs = new ArrayList<>();
         veilRingURLs = new ArrayList<>();
         otherURLs = new ArrayList<>();
-
-        final TextView capColour = (TextView) findViewById(R.id.textViewObserveCapColourVal);
-        final TextView capShape = (TextView) findViewById(R.id.textViewObserveCapShapeVal);
-        final TextView capSurface = (TextView) findViewById(R.id.textViewObserveCapSurfaceVal);
-
-        final TextView gillAttachment = (TextView) findViewById(R.id.textViewObserveGillAttachmentVal);
-        final TextView gillSpacing = (TextView) findViewById(R.id.textViewObserveGillSpacingVal);
-        final TextView gillSize = (TextView) findViewById(R.id.textViewObserveGillSizeVal);
-        final TextView gillColour = (TextView) findViewById(R.id.textViewObserveGillColourVal);
-
-        final TextView stalkShape = (TextView) findViewById(R.id.textViewObserveStalkShapeVal);
-        final TextView stalkRoot = (TextView) findViewById(R.id.textViewObserveStalkRootVal);
-        final TextView stalkSurface = (TextView) findViewById(R.id.textViewObserveStalkSurfaceVal);
-        final TextView stalkColour = (TextView) findViewById(R.id.textViewObserveStalkColourVal);
-
-        final TextView veilType = (TextView) findViewById(R.id.textViewObserveVeilTypeVal);
-        final TextView veilColour = (TextView) findViewById(R.id.textViewObserveVeilColourVal);
-        final TextView ringQuantity = (TextView) findViewById(R.id.textViewObserveRingQuantityVal);
-        final TextView ringType = (TextView) findViewById(R.id.textViewObserveRingTypeVal);
-
-        final TextView bruises = (TextView) findViewById(R.id.textViewObserveBruisesVal);
-        final TextView odor = (TextView) findViewById(R.id.textViewObserveOdorVal);
-        final TextView population = (TextView) findViewById(R.id.textViewObservePopulationVal);
-        final TextView habitat = (TextView) findViewById(R.id.textViewObserveHabitatVal);
 
         Bundle bundle = getIntent().getExtras();
         observationID = bundle.getString("id");
@@ -193,22 +189,17 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefCap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> capValues = new ArrayList<>();
+                ArrayList<String> capTitles = new ArrayList<>();
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String cap = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (cap != null) {
-
-                        if (key.contains("Cap_Colour")) {
-                            capColour.setText(cap);
-                        }
-                        if (key.contains("Cap_Shape")) {
-                            capShape.setText(cap);
-                        }
-                        if (key.contains("Cap_Surface")) {
-                            capSurface.setText(cap);
-                        }
-                    }
+                    key = key.concat(":");
+                    capValues.add(cap);
+                    capTitles.add(key);
                 }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, capTitles, capValues);
+                recyclerViewCapText.setAdapter(textAdapter);
                 dbRefCap.removeEventListener(this);
             }
 
@@ -221,25 +212,17 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefGill.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> gillValues = new ArrayList<>();
+                ArrayList<String> gillTitles = new ArrayList<>();
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String gill = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (gill == null) {
-
-                        if (key.contains("Gill_Attachment")) {
-                            gillAttachment.setText(gill);
-                        }
-                        if (key.contains("Gill_Spacing")) {
-                            gillSpacing.setText(gill);
-                        }
-                        if (key.contains("Gill_Size")) {
-                            gillSize.setText(gill);
-                        }
-                        if (key.contains("Gill_Colour")) {
-                            gillColour.setText(gill);
-                        }
-                    }
+                    key = key.concat(":");
+                    gillValues.add(gill);
+                    gillTitles.add(key);
                 }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, gillTitles, gillValues);
+                recyclerViewGillText.setAdapter(textAdapter);
                 dbRefGill.removeEventListener(this);
             }
 
@@ -253,57 +236,39 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefStem.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> stemValues = new ArrayList<>();
+                ArrayList<String> stemTitles = new ArrayList<>();
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String stem = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (stem != null) {
-
-                        if (key.contains("Stalk_Shape")) {
-                            stalkShape.setText(stem);
-                        }
-                        if (key.contains("Stalk_Root")) {
-                            stalkRoot.setText(stem);
-                        }
-                        if (key.contains("Stalk_Surface")) {
-                            stalkSurface.setText(stem);
-                        }
-                        if (key.contains("Stalk_Colour")) {
-                            stalkColour.setText(stem);
-                        }
-                    }
+                    key = key.concat(":");
+                    stemValues.add(stem);
+                    stemTitles.add(key);
                 }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, stemTitles, stemValues);
+                recyclerViewStemText.setAdapter(textAdapter);
                 dbRefStem.removeEventListener(this);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
         dbRefVeilRing = database.child("mushroom_attributes:").child(observationID).child("veil_ring").getRef();
         dbRefVeilRing.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> veilRingValues = new ArrayList<>();
+                ArrayList<String> veilRingTitles = new ArrayList<>();
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String veilRing = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (veilRing != null) {
-
-                        if (key.contains("Veil_Type")) {
-                            veilType.setText(veilRing);
-                        }
-                        if (key.contains("Veil_Colour")) {
-                            veilColour.setText(veilRing);
-                        }
-                        if (key.contains("Ring_Quantity")) {
-                            ringQuantity.setText(veilRing);
-                        }
-                        if (key.contains("Ring_Type")) {
-                            ringType.setText(veilRing);
-                        }
-                    }
+                    key = key.concat(":");
+                    veilRingValues.add(veilRing);
+                    veilRingTitles.add(key);
                 }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, veilRingTitles, veilRingValues);
+                recyclerViewVeilRingText.setAdapter(textAdapter);
                 dbRefVeilRing.removeEventListener(this);
             }
 
@@ -317,24 +282,17 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefOther.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> otherValues = new ArrayList<>();
+                ArrayList<String> otherTitles = new ArrayList<>();
                 for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
                     String other = capSnapshot.getValue(String.class);
                     String key = capSnapshot.getKey().toString();
-                    if (other != null) {
-                        if (key.contains("Bruises")) {
-                            bruises.setText(other);
-                        }
-                        if (key.contains("Odor")) {
-                            odor.setText(other);
-                        }
-                        if (key.contains("Population")) {
-                            population.setText(other);
-                        }
-                        if (key.contains("Habitat")) {
-                            habitat.setText(other);
-                        }
-                    }
+                    key = key.concat(":");
+                    otherValues.add(other);
+                    otherTitles.add(key);
                 }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, otherTitles, otherValues);
+                recyclerViewOtherText.setAdapter(textAdapter);
                 dbRefOther.removeEventListener(this);
             }
             @Override

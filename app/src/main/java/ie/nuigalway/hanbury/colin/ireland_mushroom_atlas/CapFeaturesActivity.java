@@ -98,6 +98,7 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
         String item = parent.getSelectedItem().toString();
         if(!item.contains("Select")){
             String tag = parent.getTag().toString();
+            tag = tag.replace("_", " ");
             boolean newTag = true;
             //check if item is new or just being modified
             for (String currentTag: attributesList) {
