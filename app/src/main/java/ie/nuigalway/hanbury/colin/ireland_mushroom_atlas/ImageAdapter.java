@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,16 +32,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     @Override
-    public void onBindViewHolder(ImageAdapter.ImageViewHolder imageViewHolder, int i) {
+    public void onBindViewHolder(final ImageAdapter.ImageViewHolder imageViewHolder, int i) {
         if(urls.get(i) == null){
             Toast.makeText(context, "No url", Toast.LENGTH_LONG).show();
         }
         Picasso.get()
                 .load(urls.get(i))
                 .fit()
-                .into(imageViewHolder.imageView);
-        imageViewHolder.progressbar.setVisibility(View.GONE);
+                .into(imageViewHolder.imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        imageViewHolder.progressbar.setVisibility(View.INVISIBLE);
+                    }
 
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
     }
 
     @Override
@@ -55,7 +64,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageViewHolder(View itemView){
             super(itemView);
                 this.imageView = itemView.findViewById(R.id.imageView);
-                this.progressbar = itemView.findViewById(R.id.progress_circular);
+                this.progressbar = itemView.findViewById(R.id.progress);
         }
     }
 }
