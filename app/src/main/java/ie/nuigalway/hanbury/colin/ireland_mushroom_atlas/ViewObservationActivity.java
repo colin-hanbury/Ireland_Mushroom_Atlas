@@ -2,10 +2,19 @@ package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class ViewObservationActivity extends AppCompatActivity{
@@ -37,6 +47,8 @@ public class ViewObservationActivity extends AppCompatActivity{
     private RecyclerView recyclerViewStemText;
     private RecyclerView recyclerViewVeilRingText;
     private RecyclerView recyclerViewOtherText;
+    private RecyclerView recyclerViewComments;
+
     private ImageAdapter imageAdapter;
     private TextAdapter textAdapter;
 
@@ -51,13 +63,50 @@ public class ViewObservationActivity extends AppCompatActivity{
     private DatabaseReference dbRefStemPhoto;
     private DatabaseReference dbRefVeilRingPhoto;
     private DatabaseReference dbRefOtherPhoto;
+    private DatabaseReference dbRefObserver;
+    private DatabaseReference dbRefComments;
 
+    private TextView observerName;
+    private EditText newComment;
+    private Button postButton;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private boolean initialTouch;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_observation);
+        initialTouch = true;
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        database = FirebaseDatabase.getInstance().getReference();
+        observerName = findViewById(R.id.displayObserverName);
+        newComment = findViewById(R.id.newCommentInput);
+        newComment.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(initialTouch){
+                    newComment.setText("");
+                }
+                initialTouch = false;
+                return false;
+            }
+        });
+        postButton = findViewById(R.id.postButton);
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String time = String.valueOf(new Date().getTime());
+                String username = user.getEmail().split("@", 2)[0];
+                username = username.replace(".", "");
+                database.child("comments").child(observationID).child(time).child(username)
+                        .setValue(newComment.getText().toString());
+                initialTouch = true;
+                newComment.setText("Write a comment...");
+            }
+        });
         recyclerViewCap = findViewById(R.id.recyclerViewCap);
         recyclerViewCap.setHasFixedSize(true);
         recyclerViewCap.setLayoutManager(new LinearLayoutManager(this));
@@ -90,6 +139,10 @@ public class ViewObservationActivity extends AppCompatActivity{
         recyclerViewOther = findViewById(R.id.recyclerViewOther);
         recyclerViewOther.setHasFixedSize(true);
         recyclerViewOther.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewComments = findViewById(R.id.recyclerViewComments);
+        recyclerViewComments.setHasFixedSize(true);
+        recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
+
         capURLs = new ArrayList<>();
         gillURLs = new ArrayList<>();
         stemURLs = new ArrayList<>();
@@ -99,7 +152,21 @@ public class ViewObservationActivity extends AppCompatActivity{
         Bundle bundle = getIntent().getExtras();
         observationID = bundle.getString("id");
 
-        database = FirebaseDatabase.getInstance().getReference();
+
+
+        dbRefObserver = database.child("user").child(observationID).getRef();
+        dbRefObserver.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = "John Smith";
+                name = dataSnapshot.getValue(String.class);
+                name = name.concat(":");
+                observerName.setText(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
 
         dbRefCapPhoto = database.child("mushroom_photos").child(observationID).child("cap").getRef();
         dbRefGillPhoto = database.child("mushroom_photos").child(observationID).child("gill").getRef();
@@ -107,11 +174,19 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefVeilRingPhoto = database.child("mushroom_photos").child(observationID).child("veilRing").getRef();
         dbRefOtherPhoto = database.child("mushroom_photos").child(observationID).child("other").getRef();
 
+        dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
+        dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
+        dbRefStem = database.child("mushroom_attributes:").child(observationID).child("stem").getRef();
+        dbRefVeilRing = database.child("mushroom_attributes:").child(observationID).child("veil_ring").getRef();
+        dbRefOther = database.child("mushroom_attributes:").child(observationID).child("other").getRef();
+
+        dbRefComments = database.child("comments").child(observationID).getRef();
+
         dbRefCapPhoto.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                   imageID = capSnapshot.getValue(String.class);
+               for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                   imageID = snapshot.getValue(String.class);
                    capURLs.add(imageID);
                }
                imageAdapter = new ImageAdapter(ViewObservationActivity.this, capURLs);
@@ -125,8 +200,8 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefGillPhoto.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    imageID = capSnapshot.getValue(String.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    imageID = snapshot.getValue(String.class);
                     gillURLs.add(imageID);
                 }
                 imageAdapter = new ImageAdapter(ViewObservationActivity.this, gillURLs);
@@ -140,8 +215,8 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefStemPhoto.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    imageID = capSnapshot.getValue(String.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    imageID = snapshot.getValue(String.class);
                     stemURLs.add(imageID);
                 }
                 imageAdapter = new ImageAdapter(ViewObservationActivity.this, stemURLs);
@@ -155,8 +230,8 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefVeilRingPhoto.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    imageID = capSnapshot.getValue(String.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    imageID = snapshot.getValue(String.class);
                     veilRingURLs.add(imageID);
                 }
                 imageAdapter = new ImageAdapter(ViewObservationActivity.this, veilRingURLs);
@@ -170,8 +245,8 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefOtherPhoto.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    imageID = capSnapshot.getValue(String.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    imageID = snapshot.getValue(String.class);
                     otherURLs.add(imageID);
                 }
                 imageAdapter = new ImageAdapter(ViewObservationActivity.this, otherURLs);
@@ -184,16 +259,16 @@ public class ViewObservationActivity extends AppCompatActivity{
 
 
 
-        dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
+
 
         dbRefCap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> capValues = new ArrayList<>();
                 ArrayList<String> capTitles = new ArrayList<>();
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String cap = capSnapshot.getValue(String.class);
-                    String key = capSnapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String cap = snapshot.getValue(String.class);
+                    String key = snapshot.getKey().toString();
                     key = key.concat(":");
                     capValues.add(cap);
                     capTitles.add(key);
@@ -208,15 +283,15 @@ public class ViewObservationActivity extends AppCompatActivity{
             }
         });
 
-        dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
+
         dbRefGill.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> gillValues = new ArrayList<>();
                 ArrayList<String> gillTitles = new ArrayList<>();
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String gill = capSnapshot.getValue(String.class);
-                    String key = capSnapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String gill = snapshot.getValue(String.class);
+                    String key = snapshot.getKey().toString();
                     key = key.concat(":");
                     gillValues.add(gill);
                     gillTitles.add(key);
@@ -232,15 +307,15 @@ public class ViewObservationActivity extends AppCompatActivity{
             }
         });
 
-        dbRefStem = database.child("mushroom_attributes:").child(observationID).child("stem").getRef();
+
         dbRefStem.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> stemValues = new ArrayList<>();
                 ArrayList<String> stemTitles = new ArrayList<>();
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String stem = capSnapshot.getValue(String.class);
-                    String key = capSnapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String stem = snapshot.getValue(String.class);
+                    String key = snapshot.getKey().toString();
                     key = key.concat(":");
                     stemValues.add(stem);
                     stemTitles.add(key);
@@ -254,15 +329,15 @@ public class ViewObservationActivity extends AppCompatActivity{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        dbRefVeilRing = database.child("mushroom_attributes:").child(observationID).child("veil_ring").getRef();
+
         dbRefVeilRing.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> veilRingValues = new ArrayList<>();
                 ArrayList<String> veilRingTitles = new ArrayList<>();
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String veilRing = capSnapshot.getValue(String.class);
-                    String key = capSnapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String veilRing = snapshot.getValue(String.class);
+                    String key = snapshot.getKey().toString();
                     key = key.concat(":");
                     veilRingValues.add(veilRing);
                     veilRingTitles.add(key);
@@ -278,15 +353,14 @@ public class ViewObservationActivity extends AppCompatActivity{
             }
         });
 
-        dbRefOther = database.child("mushroom_attributes:").child(observationID).child("other").getRef();
         dbRefOther.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> otherValues = new ArrayList<>();
                 ArrayList<String> otherTitles = new ArrayList<>();
-                for (DataSnapshot capSnapshot : dataSnapshot.getChildren()) {
-                    String other = capSnapshot.getValue(String.class);
-                    String key = capSnapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String other = snapshot.getValue(String.class);
+                    String key = snapshot.getKey().toString();
                     key = key.concat(":");
                     otherValues.add(other);
                     otherTitles.add(key);
@@ -295,6 +369,28 @@ public class ViewObservationActivity extends AppCompatActivity{
                 recyclerViewOtherText.setAdapter(textAdapter);
                 dbRefOther.removeEventListener(this);
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        dbRefComments.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> comments = new ArrayList<>();
+                ArrayList<String> commentators = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot ss: snapshot.getChildren()) {
+                        String comment = ss.getValue(String.class);
+                        String commentator = ss.getKey().toString();
+                        commentator = commentator.concat(":");
+                        comments.add(comment);
+                        commentators.add(commentator);
+                    }
+                }
+                textAdapter = new TextAdapter(ViewObservationActivity.this, commentators, comments);
+                recyclerViewComments.setAdapter(textAdapter);
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

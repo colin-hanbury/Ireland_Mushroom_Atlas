@@ -14,105 +14,169 @@ android:elevation="0dp"
 tools:context=".ViewObservationActivity">
 
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:background="@color/colourGrey"
-    android:orientation="vertical">
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_margin="10dp"
+        android:background="@color/colourGrey"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewCap"
+        <TextView
+            android:id="@+id/displayObserverName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold|italic"
+            android:textSize="20dp"
+            android:layout_marginBottom="5dp"/>
+
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/textbox_border">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewCapText"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewCap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewCapText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_border">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewGill"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewGillText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_border">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewStem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewStemText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_border">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewVeilRing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewVeilRingText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/textbox_border">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewOther"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewOtherText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/textbox_border"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/commentSectionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comments:"
+                android:textSize="20dp"
+                android:layout_marginLeft="5dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewComments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
+
+            <EditText
+                android:id="@+id/newCommentInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Write a comment..."
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"/>
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Post"
+                android:layout_weight="4"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="4dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewGill"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewGillText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewStem"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewStemText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewVeilRing"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewVeilRingText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="10dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewOther"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewOtherText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-</LinearLayout>
 </ScrollView>

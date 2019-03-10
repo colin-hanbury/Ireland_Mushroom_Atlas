@@ -25,57 +25,89 @@
             android:textStyle="bold"
             android:textSize="20dp"/>
 
-        <TextView android:id="@+id/textBruises"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Bruises:" />
-        <Spinner
-            android:id="@+id/spinnerBruises"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Bruises"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-        <TextView android:id="@+id/textOdor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Odor:" />
-        <Spinner
-            android:id="@+id/spinnerOdor"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Odor"/>
+            <TextView android:id="@+id/textBruises"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Bruises:" />
+            <Spinner
+                android:id="@+id/spinnerBruises"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Bruises"/>
+        </LinearLayout>
 
-        <TextView android:id="@+id/textPopulation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Population:" />
-        <Spinner
-            android:id="@+id/spinnerPopulation"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Population"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-        <TextView android:id="@+id/textHabitat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Habitat:" />
-        <Spinner
-            android:id="@+id/spinnerHabitat"
+            <TextView android:id="@+id/textOdor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Odor:" />
+            <Spinner
+                android:id="@+id/spinnerOdor"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Odor"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Habitat"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
+
+            <TextView android:id="@+id/textPopulation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Population:" />
+            <Spinner
+                android:id="@+id/spinnerPopulation"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Population"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/textbox_border">
+
+            <TextView android:id="@+id/textHabitat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Habitat:" />
+            <Spinner
+                android:id="@+id/spinnerHabitat"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Habitat"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonSaveAndReturnOtherFeatures"

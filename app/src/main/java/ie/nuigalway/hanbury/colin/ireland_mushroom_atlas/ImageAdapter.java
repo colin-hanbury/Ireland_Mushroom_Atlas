@@ -1,11 +1,13 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.content.Context;
+import android.graphics.drawable.AnimatedStateListDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
     private ArrayList<String> urls;
+
 
     public ImageAdapter(Context context, ArrayList<String> urls) {
         this.context = context;
@@ -32,11 +35,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         if(urls.get(i) == null){
             Toast.makeText(context, "No url", Toast.LENGTH_LONG).show();
         }
-
         Picasso.get()
                 .load(urls.get(i))
                 .fit()
                 .into(imageViewHolder.imageView);
+        imageViewHolder.progressbar.setVisibility(View.GONE);
 
     }
 
@@ -47,10 +50,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
+        public ProgressBar progressbar;
 
         public ImageViewHolder(View itemView){
             super(itemView);
                 this.imageView = itemView.findViewById(R.id.imageView);
+                this.progressbar = itemView.findViewById(R.id.progress_circular);
         }
     }
 }

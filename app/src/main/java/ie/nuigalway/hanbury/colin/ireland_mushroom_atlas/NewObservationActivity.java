@@ -1,18 +1,12 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.Manifest;
-import android.app.AlertDialog;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,11 +16,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseUser;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,12 +42,15 @@ public class NewObservationActivity extends AppCompatActivity {
     private HashMap<String, String> attributesMap;
     private StorageReference mStorage;
     private LatLng mushroomLocation;
+    private FirebaseAuth auth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_observation);
+
+        auth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
@@ -243,8 +243,7 @@ public class NewObservationActivity extends AppCompatActivity {
                 }
 
                 if (attributesList.isEmpty()) {
-                    Toast.makeText(NewObservationActivity.this, "No data entered",
-                            Toast.LENGTH_SHORT).show();
+                    toast("No data entered");
                 }
                 else {
 
@@ -271,17 +270,23 @@ public class NewObservationActivity extends AppCompatActivity {
                 }
                 getLocation();
                 dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
+                FirebaseUser user = auth.getCurrentUser();
+                String username = user.getEmail().split("@", 2)[0];
+                username = username.replace(".", "");
+                dbRef.child("user").child(time).setValue(username);
                 uploadPhotos(time);
                 if (mushroomLocation != null){
-                    Toast.makeText(NewObservationActivity.this,
-                            "Location Submitted",
-                            Toast.LENGTH_SHORT).show();
+                    toast("Observation Submitted");
                 }
                 attributesList.clear();
                 attributesMap.clear();
                 finish();
             }
         });
+    }
+
+    private void toast(String message) {
+        Toast.makeText(NewObservationActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void uploadPhotos(final String time){
@@ -430,9 +435,6 @@ public class NewObservationActivity extends AppCompatActivity {
 
                 }
             }
-            //Toast.makeText(NewObservationActivity.this,
-              //      "Characteristics Submitted",
-                //    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -445,8 +447,7 @@ public class NewObservationActivity extends AppCompatActivity {
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(this, "Permission to access GPS denied",
-                    Toast.LENGTH_SHORT).show();
+            toast("Permission to access GPS denied");
             return;
         }
 
