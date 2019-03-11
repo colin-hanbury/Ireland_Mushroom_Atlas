@@ -37,6 +37,19 @@ tools:context=".ViewObservationActivity">
             android:background="@drawable/textbox_border">
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewGeneric"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/textbox_border">
+
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewCap"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -45,8 +58,6 @@ tools:context=".ViewObservationActivity">
                 android:id="@+id/recyclerViewCapText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
-
 
         </LinearLayout>
 

@@ -291,6 +291,37 @@ public class NewObservationActivity extends AppCompatActivity {
 
     private void uploadPhotos(final String time){
         if (!TakePhotosActivity.getPaths().isEmpty()) {
+            if (!TakePhotosActivity.getPaths().get("generic").isEmpty()) {
+                for (String path : TakePhotosActivity.getPaths().get("generic")) {
+                    String pathName = path;
+                    File photo = new File(path);
+                    String genericTime = String.valueOf(new Date().getTime());
+                    final StorageReference genericStorageRef = mStorage.child("mushroom_photos").child(time).child("generic").child(genericTime);
+                    Task uploadTask = genericStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return genericStorageRef.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String currTime = String.valueOf(new Date().getTime());
+                                String genericURL = task.getResult().toString();
+                                dbRef.child("mushroom_photos").child(time).child("generic").child(currTime)
+                                        .setValue(genericURL);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        if (!TakePhotosActivity.getPaths().isEmpty()) {
             if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("cap")) {
                     String pathName = path;

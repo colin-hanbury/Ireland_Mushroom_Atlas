@@ -1,18 +1,12 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,6 +20,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class TakePhotosActivity extends AppCompatActivity {
+
+    private boolean genericPhoto;
+    private Button addPhotoGeneric;
+    private static ArrayList<String> pathsGenericFiles;
 
     private boolean capPhoto;
     private Button addPhotoCap;
@@ -47,30 +45,33 @@ public class TakePhotosActivity extends AppCompatActivity {
     private Button addPhotoOther;
     private static ArrayList<String> pathsOtherFiles;
 
-    private Button saveAndReturn;
+    private Uri uriGeneric;
     private Uri uriCap;
     private Uri uriGill;
     private Uri uriStem;
     private Uri uriVeilRing;
     private Uri uriOther;
-    private static HashMap<String, ArrayList<String>> paths;
 
+    private static HashMap<String, ArrayList<String>> paths;
+    private Button saveAndReturn;
     private static final int CAMERA_REQUEST_CODE = 1;
     private Context context;
     private String mCurrentPhotoPath;
     private String ioException;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photos);
 
-
+        genericPhoto = false;
         capPhoto = false;
         gillPhoto = false;
         stemPhoto = false;
         veilRingPhoto = false;
         otherPhoto = false;
+        pathsGenericFiles = new ArrayList<>();
         pathsCapFiles = new ArrayList<>();
         pathsGillFiles = new ArrayList<>();
         pathsStemFiles = new ArrayList<>();
@@ -78,6 +79,34 @@ public class TakePhotosActivity extends AppCompatActivity {
         pathsOtherFiles = new ArrayList<>();
         paths = new HashMap<>();
         context = TakePhotosActivity.this;
+
+        addPhotoGeneric = findViewById(R.id.buttonAddGenericPhotos);
+        addPhotoGeneric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                genericPhoto = true;
+                // use standard intent to capture an image
+                Intent cameraPhotoGeneric = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    uriGeneric = FileProvider.getUriForFile(context,
+                            BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                }
+                catch (ActivityNotFoundException anfe) {
+                    Toast.makeText(TakePhotosActivity.this,"Exception",
+                            Toast.LENGTH_LONG);
+                    genericPhoto = false;
+                }
+                catch (IOException e){
+                    Toast.makeText(TakePhotosActivity.this,e.getMessage(),
+                            Toast.LENGTH_LONG);
+                    ioException = e.getMessage();
+                    genericPhoto = false;
+                }
+                cameraPhotoGeneric.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraPhotoGeneric.putExtra(MediaStore.EXTRA_OUTPUT, uriGeneric);
+                startActivityForResult(cameraPhotoGeneric, CAMERA_REQUEST_CODE);
+            }
+        });
 
         addPhotoCap = findViewById(R.id.buttonAddCapPhotos);
         addPhotoCap.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +256,10 @@ public class TakePhotosActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == CAMERA_REQUEST_CODE){
+            if(genericPhoto == true){
+                pathsGenericFiles.add(mCurrentPhotoPath);
+                genericPhoto = false;
+            }
             if(capPhoto == true){
                 pathsCapFiles.add(mCurrentPhotoPath);
                 capPhoto = false;
@@ -277,6 +310,7 @@ public class TakePhotosActivity extends AppCompatActivity {
     }
 
     public static HashMap<String, ArrayList<String>> getPaths(){
+        paths.put("generic", pathsGenericFiles);
         paths.put("cap", pathsCapFiles);
         paths.put("gill", pathsGillFiles);
         paths.put("stem", pathsStemFiles);

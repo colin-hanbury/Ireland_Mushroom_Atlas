@@ -37,6 +37,7 @@ public class ViewObservationActivity extends AppCompatActivity{
     private String observationID;
     private String imageID;
 
+    private RecyclerView recyclerViewGeneric;
     private RecyclerView recyclerViewCap;
     private RecyclerView recyclerViewGill;
     private RecyclerView recyclerViewStem;
@@ -52,12 +53,14 @@ public class ViewObservationActivity extends AppCompatActivity{
     private ImageAdapter imageAdapter;
     private TextAdapter textAdapter;
 
+    private ArrayList<String> genericURLs;
     private ArrayList<String> capURLs;
     private ArrayList<String> gillURLs;
     private ArrayList<String> stemURLs;
     private ArrayList<String> veilRingURLs;
     private ArrayList<String> otherURLs;
 
+    private DatabaseReference dbRefGenericPhoto;
     private DatabaseReference dbRefCapPhoto;
     private DatabaseReference dbRefGillPhoto;
     private DatabaseReference dbRefStemPhoto;
@@ -72,6 +75,7 @@ public class ViewObservationActivity extends AppCompatActivity{
     private FirebaseAuth auth;
     private FirebaseUser user;
     private boolean initialTouch;
+
 
 
     @Override
@@ -107,6 +111,9 @@ public class ViewObservationActivity extends AppCompatActivity{
                 newComment.setText("Write a comment...");
             }
         });
+        recyclerViewGeneric = findViewById(R.id.recyclerViewGeneric);
+        recyclerViewGeneric.setHasFixedSize(true);
+        recyclerViewGeneric.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCap = findViewById(R.id.recyclerViewCap);
         recyclerViewCap.setHasFixedSize(true);
         recyclerViewCap.setLayoutManager(new LinearLayoutManager(this));
@@ -143,6 +150,7 @@ public class ViewObservationActivity extends AppCompatActivity{
         recyclerViewComments.setHasFixedSize(true);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
 
+        genericURLs = new ArrayList<>();
         capURLs = new ArrayList<>();
         gillURLs = new ArrayList<>();
         stemURLs = new ArrayList<>();
@@ -168,6 +176,7 @@ public class ViewObservationActivity extends AppCompatActivity{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+        dbRefGenericPhoto = database.child("mushroom_photos").child(observationID).child("generic").getRef();
         dbRefCapPhoto = database.child("mushroom_photos").child(observationID).child("cap").getRef();
         dbRefGillPhoto = database.child("mushroom_photos").child(observationID).child("gill").getRef();
         dbRefStemPhoto = database.child("mushroom_photos").child(observationID).child("stem").getRef();
@@ -181,6 +190,21 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefOther = database.child("mushroom_attributes:").child(observationID).child("other").getRef();
 
         dbRefComments = database.child("comments").child(observationID).getRef();
+
+        dbRefGenericPhoto.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    imageID = snapshot.getValue(String.class);
+                    genericURLs.add(imageID);
+                }
+                imageAdapter = new ImageAdapter(ViewObservationActivity.this, genericURLs);
+                recyclerViewGeneric.setAdapter(imageAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
 
         dbRefCapPhoto.addValueEventListener(new ValueEventListener() {
            @Override
@@ -256,9 +280,6 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
-
-
 
 
         dbRefCap.addValueEventListener(new ValueEventListener() {
