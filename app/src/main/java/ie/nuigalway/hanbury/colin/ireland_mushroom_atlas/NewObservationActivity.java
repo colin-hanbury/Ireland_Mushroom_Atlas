@@ -289,8 +289,8 @@ public class NewObservationActivity extends AppCompatActivity {
         Toast.makeText(NewObservationActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void uploadPhotos(final String time){
-        if (!TakePhotosActivity.getPaths().isEmpty()) {
+    private void uploadPhotos(final String time) {
+        if (TakePhotosActivity.getPaths() != null) {
             if (!TakePhotosActivity.getPaths().get("generic").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("generic")) {
                     String pathName = path;
@@ -320,8 +320,7 @@ public class NewObservationActivity extends AppCompatActivity {
                     });
                 }
             }
-        }
-        if (!TakePhotosActivity.getPaths().isEmpty()) {
+        
             if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("cap")) {
                     String pathName = path;
@@ -351,7 +350,7 @@ public class NewObservationActivity extends AppCompatActivity {
                     });
                 }
             }
-            if (!TakePhotosActivity.getPaths().get("gill").isEmpty()){
+            if (!TakePhotosActivity.getPaths().get("gill").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("gill")) {
                     File photo = new File(path);
                     String gillTime = String.valueOf(new Date().getTime());
@@ -463,7 +462,6 @@ public class NewObservationActivity extends AppCompatActivity {
                             }
                         }
                     });
-
                 }
             }
         }

@@ -309,13 +309,25 @@ public class TakePhotosActivity extends AppCompatActivity {
         return image;
     }
 
-    public static HashMap<String, ArrayList<String>> getPaths(){
-        paths.put("generic", pathsGenericFiles);
-        paths.put("cap", pathsCapFiles);
-        paths.put("gill", pathsGillFiles);
-        paths.put("stem", pathsStemFiles);
-        paths.put("veilRing", pathsVeilRingFiles);
-        paths.put("other", pathsOtherFiles);
+    public static HashMap<String, ArrayList<String>> getPaths() {
+        if (pathsGenericFiles != null) {
+            paths.put("generic", pathsGenericFiles);
+        }
+        if (pathsCapFiles != null) {
+            paths.put("cap", pathsCapFiles);
+        }
+        if (pathsGillFiles != null) {
+            paths.put("gill", pathsGillFiles);
+        }
+        if (pathsStemFiles != null){
+            paths.put("stem", pathsStemFiles);
+        }
+        if (pathsVeilRingFiles != null) {
+            paths.put("veilRing", pathsVeilRingFiles);
+        }
+        if (pathsOtherFiles != null) {
+            paths.put("other", pathsOtherFiles);
+        }
         return paths;
     }
 }
