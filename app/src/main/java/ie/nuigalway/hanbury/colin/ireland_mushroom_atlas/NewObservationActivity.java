@@ -320,7 +320,7 @@ public class NewObservationActivity extends AppCompatActivity {
                     });
                 }
             }
-        
+
             if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("cap")) {
                     String pathName = path;

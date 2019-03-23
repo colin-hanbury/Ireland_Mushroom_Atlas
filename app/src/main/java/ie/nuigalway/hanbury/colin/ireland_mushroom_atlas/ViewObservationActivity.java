@@ -35,7 +35,6 @@ public class ViewObservationActivity extends AppCompatActivity{
     private DatabaseReference dbRefOther;
 
     private String observationID;
-    private String imageID;
 
     private RecyclerView recyclerViewGeneric;
     private RecyclerView recyclerViewCap;
@@ -49,9 +48,6 @@ public class ViewObservationActivity extends AppCompatActivity{
     private RecyclerView recyclerViewVeilRingText;
     private RecyclerView recyclerViewOtherText;
     private RecyclerView recyclerViewComments;
-
-    private ImageAdapter imageAdapter;
-    private TextAdapter textAdapter;
 
     private ArrayList<String> genericURLs;
     private ArrayList<String> capURLs;
@@ -176,6 +172,7 @@ public class ViewObservationActivity extends AppCompatActivity{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+        //database references for image urls
         dbRefGenericPhoto = database.child("mushroom_photos").child(observationID).child("generic").getRef();
         dbRefCapPhoto = database.child("mushroom_photos").child(observationID).child("cap").getRef();
         dbRefGillPhoto = database.child("mushroom_photos").child(observationID).child("gill").getRef();
@@ -183,6 +180,7 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefVeilRingPhoto = database.child("mushroom_photos").child(observationID).child("veilRing").getRef();
         dbRefOtherPhoto = database.child("mushroom_photos").child(observationID).child("other").getRef();
 
+        //database references for mushroom characteristics
         dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
         dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
         dbRefStem = database.child("mushroom_attributes:").child(observationID).child("stem").getRef();
@@ -195,10 +193,11 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    imageID = snapshot.getValue(String.class);
+                    String imageID = snapshot.getValue(String.class);
                     genericURLs.add(imageID);
                 }
-                imageAdapter = new ImageAdapter(ViewObservationActivity.this, genericURLs);
+                //create adapter
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, genericURLs);
                 recyclerViewGeneric.setAdapter(imageAdapter);
             }
 
@@ -206,14 +205,20 @@ public class ViewObservationActivity extends AppCompatActivity{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+        //add listener
         dbRefCapPhoto.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               //loop through all children (urls)
                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                   imageID = snapshot.getValue(String.class);
+                   //store url as image id
+                   String imageID = snapshot.getValue(String.class);
+                   //add image ad to list of urls
                    capURLs.add(imageID);
                }
-               imageAdapter = new ImageAdapter(ViewObservationActivity.this, capURLs);
+               //create adapter
+               ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, capURLs);
+               //assign adapter to recycler view
                recyclerViewCap.setAdapter(imageAdapter);
            }
 
@@ -225,10 +230,11 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    imageID = snapshot.getValue(String.class);
+                    String imageID = snapshot.getValue(String.class);
                     gillURLs.add(imageID);
                 }
-                imageAdapter = new ImageAdapter(ViewObservationActivity.this, gillURLs);
+                //create adapter
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, gillURLs);
                 recyclerViewGill.setAdapter(imageAdapter);
             }
 
@@ -240,10 +246,11 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    imageID = snapshot.getValue(String.class);
+                    String imageID = snapshot.getValue(String.class);
                     stemURLs.add(imageID);
                 }
-                imageAdapter = new ImageAdapter(ViewObservationActivity.this, stemURLs);
+                //create adapter
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, stemURLs);
                 recyclerViewStem.setAdapter(imageAdapter);
             }
 
@@ -255,10 +262,11 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    imageID = snapshot.getValue(String.class);
+                    String imageID = snapshot.getValue(String.class);
                     veilRingURLs.add(imageID);
                 }
-                imageAdapter = new ImageAdapter(ViewObservationActivity.this, veilRingURLs);
+                //create adapter
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, veilRingURLs);
                 recyclerViewVeilRing.setAdapter(imageAdapter);
             }
 
@@ -270,10 +278,11 @@ public class ViewObservationActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    imageID = snapshot.getValue(String.class);
+                    String imageID = snapshot.getValue(String.class);
                     otherURLs.add(imageID);
                 }
-                imageAdapter = new ImageAdapter(ViewObservationActivity.this, otherURLs);
+                //create adapter
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, otherURLs);
                 recyclerViewOther.setAdapter(imageAdapter);
             }
 
@@ -294,7 +303,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                     capValues.add(cap);
                     capTitles.add(key);
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, capTitles, capValues);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, capTitles, capValues);
                 recyclerViewCapText.setAdapter(textAdapter);
                 dbRefCap.removeEventListener(this);
             }
@@ -317,7 +327,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                     gillValues.add(gill);
                     gillTitles.add(key);
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, gillTitles, gillValues);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, gillTitles, gillValues);
                 recyclerViewGillText.setAdapter(textAdapter);
                 dbRefGill.removeEventListener(this);
             }
@@ -341,7 +352,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                     stemValues.add(stem);
                     stemTitles.add(key);
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, stemTitles, stemValues);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, stemTitles, stemValues);
                 recyclerViewStemText.setAdapter(textAdapter);
                 dbRefStem.removeEventListener(this);
             }
@@ -363,7 +375,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                     veilRingValues.add(veilRing);
                     veilRingTitles.add(key);
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, veilRingTitles, veilRingValues);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, veilRingTitles, veilRingValues);
                 recyclerViewVeilRingText.setAdapter(textAdapter);
                 dbRefVeilRing.removeEventListener(this);
             }
@@ -386,7 +399,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                     otherValues.add(other);
                     otherTitles.add(key);
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, otherTitles, otherValues);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, otherTitles, otherValues);
                 recyclerViewOtherText.setAdapter(textAdapter);
                 dbRefOther.removeEventListener(this);
             }
@@ -408,7 +422,8 @@ public class ViewObservationActivity extends AppCompatActivity{
                         commentators.add(commentator);
                     }
                 }
-                textAdapter = new TextAdapter(ViewObservationActivity.this, commentators, comments);
+                //create adapter
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, commentators, comments);
                 recyclerViewComments.setAdapter(textAdapter);
             }
 

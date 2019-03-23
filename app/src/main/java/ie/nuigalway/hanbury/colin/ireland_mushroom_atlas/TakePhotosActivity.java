@@ -45,13 +45,6 @@ public class TakePhotosActivity extends AppCompatActivity {
     private Button addPhotoOther;
     private static ArrayList<String> pathsOtherFiles;
 
-    private Uri uriGeneric;
-    private Uri uriCap;
-    private Uri uriGill;
-    private Uri uriStem;
-    private Uri uriVeilRing;
-    private Uri uriOther;
-
     private static HashMap<String, ArrayList<String>> paths;
     private Button saveAndReturn;
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -87,8 +80,11 @@ public class TakePhotosActivity extends AppCompatActivity {
                 genericPhoto = true;
                 // use standard intent to capture an image
                 Intent cameraPhotoGeneric = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //create a URI object and initialise it
+                Uri uri = null;
                 try {
-                    uriGeneric = FileProvider.getUriForFile(context,
+                    //create an image file and store uri
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -103,7 +99,9 @@ public class TakePhotosActivity extends AppCompatActivity {
                     genericPhoto = false;
                 }
                 cameraPhotoGeneric.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoGeneric.putExtra(MediaStore.EXTRA_OUTPUT, uriGeneric);
+                //specifiy high resolution image and pass in image URI
+                cameraPhotoGeneric.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                //start activity
                 startActivityForResult(cameraPhotoGeneric, CAMERA_REQUEST_CODE);
             }
         });
@@ -115,8 +113,9 @@ public class TakePhotosActivity extends AppCompatActivity {
                 capPhoto = true;
                 // use standard intent to capture an image
                 Intent cameraPhotoCap = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri uri = null;
                 try {
-                    uriCap = FileProvider.getUriForFile(context,
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -131,7 +130,7 @@ public class TakePhotosActivity extends AppCompatActivity {
                     capPhoto = false;
                 }
                 cameraPhotoCap.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoCap.putExtra(MediaStore.EXTRA_OUTPUT, uriCap);
+                cameraPhotoCap.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(cameraPhotoCap, CAMERA_REQUEST_CODE);
             }
         });
@@ -142,8 +141,9 @@ public class TakePhotosActivity extends AppCompatActivity {
             public void onClick(View v) {
                 gillPhoto = true;
                 Intent cameraPhotoGill = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri uri = null;
                 try {
-                    uriGill = FileProvider.getUriForFile(context,
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -158,7 +158,7 @@ public class TakePhotosActivity extends AppCompatActivity {
                     gillPhoto = false;
                 }
                 cameraPhotoGill.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoGill.putExtra(MediaStore.EXTRA_OUTPUT, uriGill);
+                cameraPhotoGill.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(cameraPhotoGill, CAMERA_REQUEST_CODE);
             }
         });
@@ -169,8 +169,9 @@ public class TakePhotosActivity extends AppCompatActivity {
             public void onClick(View v) {
                 stemPhoto = true;
                 Intent cameraPhotoStem = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri uri = null;
                 try {
-                    uriStem = FileProvider.getUriForFile(context,
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -185,7 +186,7 @@ public class TakePhotosActivity extends AppCompatActivity {
                     stemPhoto = false;
                 }
                 cameraPhotoStem.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoStem.putExtra(MediaStore.EXTRA_OUTPUT, uriStem);
+                cameraPhotoStem.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(cameraPhotoStem, CAMERA_REQUEST_CODE);
             }
         });
@@ -196,8 +197,9 @@ public class TakePhotosActivity extends AppCompatActivity {
             public void onClick(View v) {
                 veilRingPhoto = true;
                 Intent cameraPhotoVeilRing = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri uri = null;
                 try {
-                    uriVeilRing = FileProvider.getUriForFile(context,
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -212,7 +214,7 @@ public class TakePhotosActivity extends AppCompatActivity {
                     veilRingPhoto = false;
                 }
                 cameraPhotoVeilRing.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoVeilRing.putExtra(MediaStore.EXTRA_OUTPUT, uriVeilRing);
+                cameraPhotoVeilRing.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(cameraPhotoVeilRing, CAMERA_REQUEST_CODE);
             }
         });
@@ -223,8 +225,9 @@ public class TakePhotosActivity extends AppCompatActivity {
             public void onClick(View v) {
                 otherPhoto = true;
                 Intent cameraPhotoOther = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri uri = null;
                 try {
-                    uriOther = FileProvider.getUriForFile(context,
+                    uri = FileProvider.getUriForFile(context,
                             BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 }
                 catch (ActivityNotFoundException anfe) {
@@ -239,7 +242,7 @@ public class TakePhotosActivity extends AppCompatActivity {
                     otherPhoto = false;
                 }
                 cameraPhotoOther.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cameraPhotoOther.putExtra(MediaStore.EXTRA_OUTPUT, uriOther);
+                cameraPhotoOther.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(cameraPhotoOther, CAMERA_REQUEST_CODE);
             }
         });
@@ -256,6 +259,8 @@ public class TakePhotosActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == CAMERA_REQUEST_CODE){
+            //check which camera activity took place and add
+            //file path to that activity's list
             if(genericPhoto == true){
                 pathsGenericFiles.add(mCurrentPhotoPath);
                 genericPhoto = false;
@@ -310,6 +315,7 @@ public class TakePhotosActivity extends AppCompatActivity {
     }
 
     public static HashMap<String, ArrayList<String>> getPaths() {
+        //map file paths to relevant tags if they aren't empty
         if (pathsGenericFiles != null) {
             paths.put("generic", pathsGenericFiles);
         }
