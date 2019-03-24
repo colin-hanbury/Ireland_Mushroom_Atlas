@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //sign in user using entered details
                 signIn(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //register user using entered details
                 createAccount(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
+        //clear text fields
         emailText.setText(null);
         passwordText.setText(null);
         if (user != null) {

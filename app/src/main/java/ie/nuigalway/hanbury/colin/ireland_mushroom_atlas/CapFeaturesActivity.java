@@ -106,7 +106,8 @@ public class CapFeaturesActivity extends AppCompatActivity implements AdapterVie
                     newTag = false;
                 }
             }
-            Toast.makeText(this, item + " selected from " + tag, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, item + " selected from " + tag, Toast.LENGTH_SHORT)
+                    .show();
             attributesMap.put(tag, item);
             if(newTag == true) {
                 attributesList.add(tag);

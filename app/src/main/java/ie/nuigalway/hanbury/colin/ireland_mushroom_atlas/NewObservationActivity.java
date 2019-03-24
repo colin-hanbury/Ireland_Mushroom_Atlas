@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-// c.hanbury1@nuigalway.ie
-// ilikemushrooms123
 
 public class NewObservationActivity extends AppCompatActivity {
 
@@ -59,11 +57,8 @@ public class NewObservationActivity extends AppCompatActivity {
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
-
-
+        //Begin obtaining locations
         getLocation();
-
-
 
         Button takePhotosButton = findViewById(R.id.buttonTakePhotos);
         ImageButton takePhotosImageButton = findViewById(R.id.imageButtonTakePhotos);
@@ -184,11 +179,14 @@ public class NewObservationActivity extends AppCompatActivity {
             }
         });
 
+        //"Where the magic happens"
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //the current time is used as the observation ID
                 String time = String.valueOf(new Date().getTime());
 
+                //build list of all attributes observed
                 if (CapFeaturesActivity.getAttributesList() != null) {
                     for (String feature : CapFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
@@ -214,8 +212,8 @@ public class NewObservationActivity extends AppCompatActivity {
                         attributesList.add(feature);
                     }
                 }
-                ///////////////////////////////////////////////////////////////////////
 
+                //build map of all attribute values and tags observed
                 if (CapFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(CapFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
@@ -246,8 +244,9 @@ public class NewObservationActivity extends AppCompatActivity {
                     toast("No data entered");
                 }
                 else {
-
+                    //loop through newly built ArrayList
                     for (int i = 0; i < attributesList.size(); i++) {
+                        //retrieve tag and rename appropriately for storage in firebase
                         String tag = attributesList.get(i);
                         String type = "";
                         if (tag != null) {
@@ -264,22 +263,32 @@ public class NewObservationActivity extends AppCompatActivity {
                                 type = "other";
                             }
                         }
-                        dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
+                        //push attribute up to firebase database
+                        dbRef.child("mushroom_attributes").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
                 }
+                // get the current location
                 getLocation();
+                //push the location to firebase database
                 dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
+                //get user details and modify for storage in firebase
                 FirebaseUser user = auth.getCurrentUser();
                 String username = user.getEmail().split("@", 2)[0];
                 username = username.replace(".", "");
+                //push user details for observation to firebase database
                 dbRef.child("user").child(time).setValue(username);
+
+                //"Ronseal! It does exactly what it says on the tin"
                 uploadPhotos(time);
+
                 if (mushroomLocation != null){
                     toast("Observation Submitted");
                 }
+                //clear fields for next observation
                 attributesList.clear();
                 attributesMap.clear();
+                //return to main menu
                 finish();
             }
         });
@@ -292,11 +301,15 @@ public class NewObservationActivity extends AppCompatActivity {
     private void uploadPhotos(final String time) {
         if (TakePhotosActivity.getPaths() != null) {
             if (!TakePhotosActivity.getPaths().get("generic").isEmpty()) {
+                //loop through photo paths of this type (generic)
                 for (String path : TakePhotosActivity.getPaths().get("generic")) {
-                    String pathName = path;
+                    //create file from path
                     File photo = new File(path);
+                    //get photo type id from the current time
                     String genericTime = String.valueOf(new Date().getTime());
-                    final StorageReference genericStorageRef = mStorage.child("mushroom_photos").child(time).child("generic").child(genericTime);
+                    //push photo to firebase storage
+                    final StorageReference genericStorageRef = mStorage.child("mushroom_photos")
+                            .child(time).child("generic").child(genericTime);
                     Task uploadTask = genericStorageRef.putFile(Uri.fromFile(photo));
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
@@ -306,15 +319,19 @@ public class NewObservationActivity extends AppCompatActivity {
                             }
                             // Continue with the task to get the download URL
                             return genericStorageRef.getDownloadUrl();
+                            //once uploaded do
                         }
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()) {
+                                //get specific photo ID from the current time
                                 String currTime = String.valueOf(new Date().getTime());
+                                //get photo URL
                                 String genericURL = task.getResult().toString();
-                                dbRef.child("mushroom_photos").child(time).child("generic").child(currTime)
-                                        .setValue(genericURL);
+                                //save photo URL in firebase database
+                                dbRef.child("mushroom_photos").child(time).child("generic")
+                                        .child(currTime).setValue(genericURL);
                             }
                         }
                     });
@@ -323,7 +340,6 @@ public class NewObservationActivity extends AppCompatActivity {
 
             if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("cap")) {
-                    String pathName = path;
                     File photo = new File(path);
                     String capTime = String.valueOf(new Date().getTime());
                     final StorageReference capStorageRef = mStorage.child("mushroom_photos").child(time).child("cap").child(capTime);

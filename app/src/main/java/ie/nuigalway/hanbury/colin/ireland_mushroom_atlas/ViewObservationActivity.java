@@ -181,11 +181,11 @@ public class ViewObservationActivity extends AppCompatActivity{
         dbRefOtherPhoto = database.child("mushroom_photos").child(observationID).child("other").getRef();
 
         //database references for mushroom characteristics
-        dbRefCap = database.child("mushroom_attributes:").child(observationID).child("cap").getRef();
-        dbRefGill = database.child("mushroom_attributes:").child(observationID).child("gill").getRef();
-        dbRefStem = database.child("mushroom_attributes:").child(observationID).child("stem").getRef();
-        dbRefVeilRing = database.child("mushroom_attributes:").child(observationID).child("veil_ring").getRef();
-        dbRefOther = database.child("mushroom_attributes:").child(observationID).child("other").getRef();
+        dbRefCap = database.child("mushroom_attributes").child(observationID).child("cap").getRef();
+        dbRefGill = database.child("mushroom_attributes").child(observationID).child("gill").getRef();
+        dbRefStem = database.child("mushroom_attributes").child(observationID).child("stem").getRef();
+        dbRefVeilRing = database.child("mushroom_attributes").child(observationID).child("veil_ring").getRef();
+        dbRefOther = database.child("mushroom_attributes").child(observationID).child("other").getRef();
 
         dbRefComments = database.child("comments").child(observationID).getRef();
 
@@ -197,8 +197,10 @@ public class ViewObservationActivity extends AppCompatActivity{
                     genericURLs.add(imageID);
                 }
                 //create adapter
-                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, genericURLs);
+                ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this,
+                        genericURLs);
                 recyclerViewGeneric.setAdapter(imageAdapter);
+                dbRefGenericPhoto.removeEventListener(this);
             }
 
             @Override
@@ -217,9 +219,11 @@ public class ViewObservationActivity extends AppCompatActivity{
                    capURLs.add(imageID);
                }
                //create adapter
-               ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, capURLs);
+               ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this,
+                       capURLs);
                //assign adapter to recycler view
                recyclerViewCap.setAdapter(imageAdapter);
+               dbRefCapPhoto.removeEventListener(this);
            }
 
            @Override
@@ -236,6 +240,7 @@ public class ViewObservationActivity extends AppCompatActivity{
                 //create adapter
                 ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, gillURLs);
                 recyclerViewGill.setAdapter(imageAdapter);
+                dbRefGillPhoto.removeEventListener(this);
             }
 
             @Override
@@ -252,6 +257,7 @@ public class ViewObservationActivity extends AppCompatActivity{
                 //create adapter
                 ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, stemURLs);
                 recyclerViewStem.setAdapter(imageAdapter);
+                dbRefStemPhoto.removeEventListener(this);
             }
 
             @Override
@@ -268,6 +274,7 @@ public class ViewObservationActivity extends AppCompatActivity{
                 //create adapter
                 ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, veilRingURLs);
                 recyclerViewVeilRing.setAdapter(imageAdapter);
+                dbRefVeilRingPhoto.removeEventListener(this);
             }
 
             @Override
@@ -284,27 +291,35 @@ public class ViewObservationActivity extends AppCompatActivity{
                 //create adapter
                 ImageAdapter imageAdapter = new ImageAdapter(ViewObservationActivity.this, otherURLs);
                 recyclerViewOther.setAdapter(imageAdapter);
+                dbRefOtherPhoto.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-
+        //add listener
         dbRefCap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> capValues = new ArrayList<>();
                 ArrayList<String> capTitles = new ArrayList<>();
+                //loop through all children (titles and values)
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //store child value as cap
                     String cap = snapshot.getValue(String.class);
+                    //store child key as key
                     String key = snapshot.getKey().toString();
+                    //remove semi-colon from string
                     key = key.concat(":");
+                    //add to lists
                     capValues.add(cap);
                     capTitles.add(key);
                 }
                 //create adapter
-                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this, capTitles, capValues);
+                TextAdapter textAdapter = new TextAdapter(ViewObservationActivity.this,
+                        capTitles, capValues);
+                //assign adapter to recycler view
                 recyclerViewCapText.setAdapter(textAdapter);
                 dbRefCap.removeEventListener(this);
             }
@@ -324,6 +339,7 @@ public class ViewObservationActivity extends AppCompatActivity{
                     String gill = snapshot.getValue(String.class);
                     String key = snapshot.getKey().toString();
                     key = key.concat(":");
+                    //add image ad to list of urls
                     gillValues.add(gill);
                     gillTitles.add(key);
                 }

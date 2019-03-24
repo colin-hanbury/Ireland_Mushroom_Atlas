@@ -27,7 +27,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.image_item, viewGroup, false);
+        //create view in view observation with image item
+        View view = LayoutInflater.from(context).inflate(R.layout.image_item, viewGroup,
+                false);
+        //instantiate new ImageViewHolder
         return new ImageViewHolder(view);
     }
 
@@ -63,8 +66,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         public ImageViewHolder(View itemView){
             super(itemView);
-                this.imageView = itemView.findViewById(R.id.imageView);
-                this.progressbar = itemView.findViewById(R.id.progress);
+            //create new image view in image item
+            this.imageView = itemView.findViewById(R.id.imageView);
+            //create new progress bar in image item
+            this.progressbar = itemView.findViewById(R.id.progress);
         }
     }
 }
