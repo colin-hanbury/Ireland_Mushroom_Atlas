@@ -22,15 +22,17 @@ public class TextAdapter extends  RecyclerView.Adapter<TextAdapter.TextViewHolde
         this.values = values;
     }
 
-    @NonNull
     @Override
-    public TextViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.text_item, viewGroup, false);
+    public TextViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        //create view in view observation with image item
+        View view = LayoutInflater.from(context).inflate(R.layout.text_item, viewGroup,
+                false);
+        //instantiate new ImageViewHolder
         return new TextViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TextViewHolder textViewHolder, int i) {
+    public void onBindViewHolder(TextViewHolder textViewHolder, int i) {
         textViewHolder.textTitle.setText(titles.get(i));
         textViewHolder.textValue.setText(values.get(i));
     }
@@ -43,8 +45,9 @@ public class TextAdapter extends  RecyclerView.Adapter<TextAdapter.TextViewHolde
     public class TextViewHolder extends RecyclerView.ViewHolder {
         public TextView textTitle;
         public TextView textValue;
-        public TextViewHolder(@NonNull View itemView) {
+        public TextViewHolder(View itemView) {
             super(itemView);
+            //create new text views in text item
             this.textTitle = itemView.findViewById(R.id.textViewTitle);
             this.textValue = itemView.findViewById(R.id.textViewValue);
         }

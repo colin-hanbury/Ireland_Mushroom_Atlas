@@ -38,7 +38,7 @@
                 android:src="@drawable/mushroom_photos"/>
 
             <ImageButton
-                android:id="@+id/imageButtonStemFeatures"
+                android:id="@+id/imageButtonCapFeatures"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -46,7 +46,8 @@
                 android:layout_marginRight="5dp"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:src="@drawable/mushroom_stem"/>
+                android:src="@drawable/mushroom_cap"/>
+
 
         </LinearLayout>
 
@@ -65,11 +66,12 @@
                 android:text="Take Photos"/>
 
             <Button
-                android:id="@+id/buttonStemFeatures"
+                android:id="@+id/buttonCapFeatures"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Stem Features"/>
+                android:text="Cap Features"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -79,7 +81,7 @@
             android:layout_weight="1" >
 
             <ImageButton
-                android:id="@+id/imageButtonCapFeatures"
+                android:id="@+id/imageButtonStemFeatures"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -87,7 +89,7 @@
                 android:layout_marginRight="5dp"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:src="@drawable/mushroom_cap"/>
+                android:src="@drawable/mushroom_stem"/>
 
             <ImageButton
                 android:id="@+id/imageButtonGillFeatures"
@@ -109,11 +111,11 @@
             android:layout_marginTop="10dp">
 
             <Button
-                android:id="@+id/buttonCapFeatures"
+                android:id="@+id/buttonStemFeatures"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Cap Features"/>
+                android:text="Stem Features"/>
 
             <Button
                 android:id="@+id/buttonGillFeatures"

@@ -1,18 +1,12 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
-import android.Manifest;
-import android.app.AlertDialog;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,19 +16,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseUser;
+
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-// c.hanbury1@nuigalway.ie
-// ilikemushrooms123
 
 public class NewObservationActivity extends AppCompatActivity {
 
@@ -45,12 +40,15 @@ public class NewObservationActivity extends AppCompatActivity {
     private HashMap<String, String> attributesMap;
     private StorageReference mStorage;
     private LatLng mushroomLocation;
+    private FirebaseAuth auth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_observation);
+
+        auth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
@@ -59,11 +57,8 @@ public class NewObservationActivity extends AppCompatActivity {
 
         attributesList = new ArrayList<>();
         attributesMap = new HashMap<>();
-
-
+        //Begin obtaining locations
         getLocation();
-
-
 
         Button takePhotosButton = findViewById(R.id.buttonTakePhotos);
         ImageButton takePhotosImageButton = findViewById(R.id.imageButtonTakePhotos);
@@ -184,11 +179,14 @@ public class NewObservationActivity extends AppCompatActivity {
             }
         });
 
+        //"Where the magic happens"
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //the current time is used as the observation ID
                 String time = String.valueOf(new Date().getTime());
 
+                //build list of all attributes observed
                 if (CapFeaturesActivity.getAttributesList() != null) {
                     for (String feature : CapFeaturesActivity.getAttributesList()) {
                         attributesList.add(feature);
@@ -214,8 +212,8 @@ public class NewObservationActivity extends AppCompatActivity {
                         attributesList.add(feature);
                     }
                 }
-                ///////////////////////////////////////////////////////////////////////
 
+                //build map of all attribute values and tags observed
                 if (CapFeaturesActivity.getAttributesMap() != null) {
                     HashMap tempMap = new HashMap(CapFeaturesActivity.getAttributesMap());
                     tempMap.keySet().removeAll(attributesMap.keySet());
@@ -243,12 +241,12 @@ public class NewObservationActivity extends AppCompatActivity {
                 }
 
                 if (attributesList.isEmpty()) {
-                    Toast.makeText(NewObservationActivity.this, "No data entered",
-                            Toast.LENGTH_SHORT).show();
+                    toast("No data entered");
                 }
                 else {
-
+                    //loop through newly built ArrayList
                     for (int i = 0; i < attributesList.size(); i++) {
+                        //retrieve tag and rename appropriately for storage in firebase
                         String tag = attributesList.get(i);
                         String type = "";
                         if (tag != null) {
@@ -265,30 +263,83 @@ public class NewObservationActivity extends AppCompatActivity {
                                 type = "other";
                             }
                         }
-                        dbRef.child("mushroom_attributes:").child(time).child(type).child(tag).
+                        //push attribute up to firebase database
+                        dbRef.child("mushroom_attributes").child(time).child(type).child(tag).
                                 setValue(attributesMap.get(tag));
                     }
                 }
+                // get the current location
                 getLocation();
+                //push the location to firebase database
                 dbRef.child("mushroom_locations").child(time).setValue(mushroomLocation);
+                //get user details and modify for storage in firebase
+                FirebaseUser user = auth.getCurrentUser();
+                String username = user.getEmail().split("@", 2)[0];
+                username = username.replace(".", "");
+                //push user details for observation to firebase database
+                dbRef.child("user").child(time).setValue(username);
+
+                //"Ronseal! It does exactly what it says on the tin"
                 uploadPhotos(time);
+
                 if (mushroomLocation != null){
-                    Toast.makeText(NewObservationActivity.this,
-                            "Location Submitted",
-                            Toast.LENGTH_SHORT).show();
+                    toast("Observation Submitted");
                 }
+                //clear fields for next observation
                 attributesList.clear();
                 attributesMap.clear();
+                //return to main menu
                 finish();
             }
         });
     }
 
-    private void uploadPhotos(final String time){
-        if (!TakePhotosActivity.getPaths().isEmpty()) {
+    private void toast(String message) {
+        Toast.makeText(NewObservationActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void uploadPhotos(final String time) {
+        if (TakePhotosActivity.getPaths() != null) {
+            if (!TakePhotosActivity.getPaths().get("generic").isEmpty()) {
+                //loop through photo paths of this type (generic)
+                for (String path : TakePhotosActivity.getPaths().get("generic")) {
+                    //create file from path
+                    File photo = new File(path);
+                    //get photo type id from the current time
+                    String genericTime = String.valueOf(new Date().getTime());
+                    //push photo to firebase storage
+                    final StorageReference genericStorageRef = mStorage.child("mushroom_photos")
+                            .child(time).child("generic").child(genericTime);
+                    Task uploadTask = genericStorageRef.putFile(Uri.fromFile(photo));
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            // Continue with the task to get the download URL
+                            return genericStorageRef.getDownloadUrl();
+                            //once uploaded do
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                //get specific photo ID from the current time
+                                String currTime = String.valueOf(new Date().getTime());
+                                //get photo URL
+                                String genericURL = task.getResult().toString();
+                                //save photo URL in firebase database
+                                dbRef.child("mushroom_photos").child(time).child("generic")
+                                        .child(currTime).setValue(genericURL);
+                            }
+                        }
+                    });
+                }
+            }
+
             if (!TakePhotosActivity.getPaths().get("cap").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("cap")) {
-                    String pathName = path;
                     File photo = new File(path);
                     String capTime = String.valueOf(new Date().getTime());
                     final StorageReference capStorageRef = mStorage.child("mushroom_photos").child(time).child("cap").child(capTime);
@@ -315,7 +366,7 @@ public class NewObservationActivity extends AppCompatActivity {
                     });
                 }
             }
-            if (!TakePhotosActivity.getPaths().get("gill").isEmpty()){
+            if (!TakePhotosActivity.getPaths().get("gill").isEmpty()) {
                 for (String path : TakePhotosActivity.getPaths().get("gill")) {
                     File photo = new File(path);
                     String gillTime = String.valueOf(new Date().getTime());
@@ -427,12 +478,8 @@ public class NewObservationActivity extends AppCompatActivity {
                             }
                         }
                     });
-
                 }
             }
-            //Toast.makeText(NewObservationActivity.this,
-              //      "Characteristics Submitted",
-                //    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -445,8 +492,7 @@ public class NewObservationActivity extends AppCompatActivity {
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(this, "Permission to access GPS denied",
-                    Toast.LENGTH_SHORT).show();
+            toast("Permission to access GPS denied");
             return;
         }
 

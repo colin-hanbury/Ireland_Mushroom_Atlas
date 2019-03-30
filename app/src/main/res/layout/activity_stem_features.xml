@@ -25,76 +25,108 @@
             android:textStyle="bold"
             android:textSize="20dp"/>
 
-        <TextView android:id="@+id/textStemShape"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Stem Shape:" />
-
-        <Spinner
-            android:id="@+id/spinnerStemShape"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Stem_Shape"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
+
+            <TextView android:id="@+id/textStemShape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Stem Shape:" />
+
+            <Spinner
+                android:id="@+id/spinnerStemShape"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Stem_Shape"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-            <TextView android:id="@+id/textStemRoot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Stem Root:"
-                android:layout_weight="2"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/stemRootButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:text="See Example Stem Roots"
-                android:textAlignment="center"
-                android:textSize="12dp"/>
+                <TextView android:id="@+id/textStemRoot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Select Stem Root:"
+                    android:layout_weight="2"/>
+
+                <Button
+                    android:id="@+id/stemRootButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:text="See Example Stem Roots"
+                    android:textAlignment="center"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinnerStemRoot"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Stem_Root"/>
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinnerStemRoot"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Stem_Root"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-        <TextView android:id="@+id/textStalkSurface"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Stem Surface:" />
-        <Spinner
-            android:id="@+id/spinnerStemSurface"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Stem_Surface"/>
+            <TextView android:id="@+id/textStalkSurface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Stem Surface:" />
+            <Spinner
+                android:id="@+id/spinnerStemSurface"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Stem_Surface"/>
+        </LinearLayout>
 
-        <TextView android:id="@+id/textStalkColour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Stem Colour:" />
-        <Spinner
-            android:id="@+id/spinnerStemColour"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Stem_Colour"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/textbox_border">
+
+            <TextView android:id="@+id/textStalkColour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Stem Colour:" />
+            <Spinner
+                android:id="@+id/spinnerStemColour"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Stem_Colour"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonSaveAndReturnStemFeatures"

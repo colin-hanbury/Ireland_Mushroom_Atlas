@@ -25,75 +25,107 @@ tools:context=".VeilRingActivity">
         android:textStyle="bold"
         android:textSize="20dp"/>
 
-    <TextView android:id="@+id/textVeilType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Veil Type:" />
-    <Spinner
-        android:id="@+id/spinnerVeilType"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/textbox_border"
-        android:spinnerMode="dropdown"
-        android:tag="Veil_Type"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textbox_border">
 
-    <TextView android:id="@+id/textVeilColour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Veil Colour:" />
-    <Spinner
-        android:id="@+id/spinnerVeilColour"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/textbox_border"
-        android:spinnerMode="dropdown"
-        android:tag="Veil_Colour"/>
-
-    <TextView android:id="@+id/textRingQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Ring Quantity:" />
-    <Spinner
-        android:id="@+id/spinnerRingQuantity"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/textbox_border"
-        android:spinnerMode="dropdown"
-        android:tag="Ring_Quantity"/>
+        <TextView android:id="@+id/textVeilType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Select Veil Type:" />
+        <Spinner
+            android:id="@+id/spinnerVeilType"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_border"
+            android:spinnerMode="dropdown"
+            android:tag="Veil_Type"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textbox_border">
 
-        <TextView android:id="@+id/textRingType"
+        <TextView android:id="@+id/textVeilColour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Select Ring Type:" />
-
-        <Button
-            android:id="@+id/ringTypesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_weight="1"
-            android:text="See Example Ring Types"
-            android:textAlignment="center"
-            android:textSize="12dp"/>
+            android:layout_marginLeft="5dp"
+            android:text="Select Veil Colour:" />
+        <Spinner
+            android:id="@+id/spinnerVeilColour"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_border"
+            android:spinnerMode="dropdown"
+            android:tag="Veil_Colour"/>
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/spinnerRingType"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/textbox_border"
-        android:spinnerMode="dropdown"
-        android:tag="Ring_Type"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textbox_border">
+
+        <TextView android:id="@+id/textRingQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Select Ring Quantity:" />
+        <Spinner
+            android:id="@+id/spinnerRingQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_border"
+            android:spinnerMode="dropdown"
+            android:tag="Ring_Quantity"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textbox_border">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/textRingType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="Select Ring Type:" />
+
+            <Button
+                android:id="@+id/ringTypesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:text="See Example Ring Types"
+                android:textAlignment="center"
+                android:textSize="12dp"/>
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spinnerRingType"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/textbox_border"
+            android:spinnerMode="dropdown"
+            android:tag="Ring_Type"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonSaveAndReturnVeilRingFeatures"

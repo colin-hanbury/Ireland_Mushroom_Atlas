@@ -22,11 +22,12 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-
+    private FirebaseUser user;
     private EditText emailText;
     private EditText passwordText;
     private Button signInButton;
     private Button registerButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //sign in user using entered details
                 signIn(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
@@ -49,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //register user using entered details
                 createAccount(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
@@ -62,18 +65,16 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         //Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = auth.getCurrentUser();
+                        user = auth.getCurrentUser();
                         updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
-                        //Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         toast("Authentication failed");
                         updateUI(null);
                     }
                 }
             });
     }
-
 
     public void signIn(String email, String password){
         auth.signInWithEmailAndPassword(email, password)
@@ -88,8 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
+                        toast("Authentication failed");
                         updateUI(null);
                     }
                 }
@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
+        //clear text fields
         emailText.setText(null);
         passwordText.setText(null);
         if (user != null) {

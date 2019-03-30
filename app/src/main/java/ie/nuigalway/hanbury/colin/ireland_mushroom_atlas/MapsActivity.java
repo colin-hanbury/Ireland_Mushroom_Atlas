@@ -1,15 +1,11 @@
 package ie.nuigalway.hanbury.colin.ireland_mushroom_atlas;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Build;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -143,15 +139,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (DataSnapshot locSnapshot : dataSnapshot.getChildren()) {
                     //get location from database
                     LocationData loc = (LocationData) locSnapshot.getValue(LocationData.class);
+                    //get the observation ID
                     String tag = locSnapshot.getKey().toString();
                     if (loc != null) {
-                        //add marker to the map
+                        //add marker to the map with the observation ID as the title
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(loc.getLatitude(), loc.getLongitude())))
                         .setTag(tag);
-                        //give marker a title of the number of devices at that location
-                        //.title("No. Bluetooth Devices: "+loc.getNumBluetoothDevices()));
-                        //get the most recent location coordinates
 
                         long recordedTime = Long.parseLong(locSnapshot.getKey());
                         if (recordedTime > max) {
@@ -159,17 +153,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             lastLocationLat = loc.latitude;
                             lastLocationLong = loc.longitude;
 
-                            //Log.i("MyTag", "onDataChange:" + lastLocationLat +
-                            //       ", "+ lastLocationLong);
-
                         }
                     }
-                    //Log.i("MyTag", "camera:" + lastLocationLat +", "+ lastLocationLong);
-                    //center the map on the most recent marker
-
+                    //adjust camera to most recent marker created
                     CameraUpdate center =
-                            CameraUpdateFactory.newLatLng(new LatLng(lastLocationLat, lastLocationLong));
-                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(8);
+                            CameraUpdateFactory.newLatLng(new LatLng(lastLocationLat,
+                                    lastLocationLong));
+                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
                     mMap.moveCamera(center);
                     mMap.animateCamera(zoom);
                     ref.removeEventListener(this);
@@ -185,12 +175,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    public void onInfoWindowClick(Marker marker) {
-        //marker.showInfoWindow();
-        /*Intent viewObservation = new Intent(MapsActivity.this, ViewObservationActivity.class);
-        startActivity(viewObservation);
-
-
-        */
-    }
+    public void onInfoWindowClick(Marker marker) {}
 }

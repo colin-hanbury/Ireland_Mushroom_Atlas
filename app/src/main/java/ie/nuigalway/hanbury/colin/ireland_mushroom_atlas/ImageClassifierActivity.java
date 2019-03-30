@@ -218,7 +218,8 @@ public class ImageClassifierActivity extends AppCompatActivity {
             createCameraPreview();
             captureButton.setText("Capture");
             values.clear();
-            resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this, values);
+            resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this,
+                    values);
             recyclerViewClassify.setAdapter(resultAdapter);
         }
         initialized = true;
@@ -263,8 +264,10 @@ public class ImageClassifierActivity extends AppCompatActivity {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             texture.setDefaultBufferSize(imageDimensions.getWidth(),imageDimensions.getHeight());
             Surface surface = new Surface(texture);
-            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            captureRequestBuilder = cameraDevice.createCaptureRequest(
+                    CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
+            //attempt to create a capture session
             cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession
                     .StateCallback() {
                 @Override
@@ -273,6 +276,7 @@ public class ImageClassifierActivity extends AppCompatActivity {
                         return;
                     }
                     Log.d(TAG, "Create preview success");
+                    //store capture session in field variable
                     captureSession = cameraCaptureSession;
                     updatePreview();
                 }
@@ -281,9 +285,7 @@ public class ImageClassifierActivity extends AppCompatActivity {
                     Log.d(TAG, "Create preview failed");
                 }
             },null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
+        } catch (CameraAccessException e) { e.printStackTrace(); }
         previewMode = true;
     }
 
@@ -293,6 +295,7 @@ public class ImageClassifierActivity extends AppCompatActivity {
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
         try{
+            //repeating request to continually send captures as a camera preview
             captureSession.setRepeatingRequest(captureRequestBuilder.build(),null,
                     backgroundHandler);
             Log.d(TAG, "Update preview success");
@@ -337,7 +340,8 @@ public class ImageClassifierActivity extends AppCompatActivity {
                                     values.add(result);
                                 }
                             }
-                            resultAdapter = new ClassifierResultAdapter(ImageClassifierActivity.this, values);
+                            resultAdapter = new ClassifierResultAdapter(
+                                    ImageClassifierActivity.this, values);
                             recyclerViewClassify.setAdapter(resultAdapter);
                             captureButton.setText("New Capture");
                         }

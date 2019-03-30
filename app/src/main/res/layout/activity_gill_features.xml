@@ -29,94 +29,123 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-            <TextView android:id="@+id/textCapShape"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Gill Attachment:"
-                android:layout_weight="2"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/gillAttachmentsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:text="See Example Gill Attachment"
-                android:textAlignment="center"
-                android:textSize="12dp"/>
+                <TextView android:id="@+id/textCapShape"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Select Gill Attachment:"
+                    android:layout_weight="2"/>
+
+                <Button
+                    android:id="@+id/gillAttachmentsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:text="See Example Gill Attachment"
+                    android:textAlignment="center"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinnerGillAttachment"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Gill_Attachment"/>
         </LinearLayout>
-
-        <TextView android:id="@+id/textGillAttachment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Gill Attachment:" />
-        <Spinner
-            android:id="@+id/spinnerGillAttachment"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Gill_Attachment"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-            <TextView android:id="@+id/textGillSpacing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Gill Spacing:"
-                android:layout_weight="2"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/gillSpacingsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:text="See Example Gill Spacings"
-                android:textAlignment="center"
-                android:textSize="12dp"/>
+                <TextView android:id="@+id/textGillSpacing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Select Gill Spacing:"
+                    android:layout_weight="2"/>
+
+                <Button
+                    android:id="@+id/gillSpacingsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:text="See Example Gill Spacings"
+                    android:textAlignment="center"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinnerGillSpacing"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Gill_Spacing"/>
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinnerGillSpacing"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Gill_Spacing"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/textbox_border">
 
         <TextView android:id="@+id/textGillSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Select Gill Size:" />
         <Spinner
             android:id="@+id/spinnerGillSize"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
             android:background="@drawable/textbox_border"
             android:spinnerMode="dropdown"
             android:tag="Gill_Size"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/textbox_border">
+
         <TextView android:id="@+id/textGillColour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Select Gill Colour:" />
         <Spinner
             android:id="@+id/spinnerGillColour"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
             android:background="@drawable/textbox_border"
             android:spinnerMode="dropdown"
             android:tag="Gill_Colour"/>
+    </LinearLayout>
 
         <Button
             android:id="@+id/buttonSaveAndReturnGillFeatures"

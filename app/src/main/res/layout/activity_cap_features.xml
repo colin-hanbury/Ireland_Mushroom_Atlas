@@ -29,59 +29,87 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-            <TextView android:id="@+id/textCapShape"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Cap Shape:"
-                android:layout_weight="2"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/capShapesButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="1"
-                android:text="See Example Cap Shapes"
-                android:textAlignment="center"
-                android:textSize="12dp"/>
+                <TextView android:id="@+id/textCapShape"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Cap Shape:"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="2"/>
+
+                <Button
+                    android:id="@+id/capShapesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:text="See Example Cap Shapes"
+                    android:textAlignment="center"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinnerCapShape"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Cap_Shape"/>
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinnerCapShape"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Cap_Shape"/>
 
-        <TextView android:id="@+id/textCapSurface"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Cap Surface:" />
-        <Spinner
-            android:id="@+id/spinnerCapSurface"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Cap_Surface"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/textbox_border">
 
-        <TextView android:id="@+id/textCapColour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Cap Colour:" />
-        <Spinner
-            android:id="@+id/spinnerCapColour"
+            <TextView android:id="@+id/textCapSurface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Cap Surface:" />
+
+            <Spinner
+                android:id="@+id/spinnerCapSurface"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Cap_Surface"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/textbox_border"
-            android:spinnerMode="dropdown"
-            android:tag="Cap_Colour"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/textbox_border">
+
+            <TextView android:id="@+id/textCapColour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Select Cap Colour:" />
+
+            <Spinner
+                android:id="@+id/spinnerCapColour"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/textbox_border"
+                android:spinnerMode="dropdown"
+                android:tag="Cap_Colour"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonSaveAndReturnCapFeatures"
@@ -91,5 +119,7 @@
             android:layout_marginTop="20dp"
             android:text="Save and Return"
             android:textAlignment="center"/>
+
     </LinearLayout>
+
 </ScrollView>
