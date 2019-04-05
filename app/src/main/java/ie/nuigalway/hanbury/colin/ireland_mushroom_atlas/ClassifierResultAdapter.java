@@ -49,8 +49,8 @@ public class ClassifierResultAdapter  extends  RecyclerView.Adapter<ClassifierRe
         else  if (current.contains("craterellus cornucopioides")){
             url = "https://en.wikipedia.org/wiki/Craterellus_cornucopioides";
         }
-        else  if (current.contains("hygrocybe miniata")){
-            url = "https://en.wikipedia.org/wiki/Hygrocybe_miniata";
+        else  if (current.contains("waxy cap")){
+            url = "https://www.mushroomexpert.com/hygrophoraceae.html";
         }
         else  if (current.contains("amanita muscaria")){
             url = "https://en.wikipedia.org/wiki/Amanita_muscaria";
